@@ -2,6 +2,9 @@ import mongoose from "mongoose";
 import express from "express";
 import morgan from "morgan";
 import dotenv from 'dotenv'
+import { authController } from "./controller/authController.js";
+import { userController } from "./controller/userController.js";
+import { songController } from "./controller/songController.js";
 
 dotenv.config();
 
@@ -9,7 +12,10 @@ const sv = express();
 sv.use(express.json());
 sv.use(morgan("combined"));
 
-sv.use('/index' , (req, res) => res.status(200).send(`i am comback`));
+
+sv.use('auth', authController);
+sv.use('users', userController);
+sv.use('songs', songController);
 
 mongoose
   .connect(process.env.MONGODB)
