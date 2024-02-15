@@ -13,9 +13,10 @@ sv.use(express.json());
 sv.use(morgan("combined"));
 
 
-sv.use('auth', authController);
-sv.use('users', userController);
-sv.use('songs', songController);
+sv.use('/auth', authController);
+sv.use('/users', userController);
+sv.use('/songs', songController);
+sv.use('/index', (req, res) => res.status(200).send('hello'))
 
 mongoose
   .connect(process.env.MONGODB)
