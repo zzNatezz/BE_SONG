@@ -1,4 +1,5 @@
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 import { User } from "../modell/userModel.js";
 
 const authController = {
@@ -32,7 +33,14 @@ const authController = {
       }
 
       if (user && password) {
-        res.status(200).json(user);
+        jwt.sign(
+          {
+            id: user.id,
+            admin: user.admin,
+          },
+          process.env.JWT_ACCESS_KEY
+        ),
+          res.status(200).json(user);
       }
     } catch (error) {
       res.status(500).json(error);
