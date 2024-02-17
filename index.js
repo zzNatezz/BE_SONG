@@ -2,11 +2,20 @@ import mongoose from "mongoose";
 import express from "express";
 import morgan from "morgan";
 import dotenv from 'dotenv'
+import multer from "multer";
+import {v2 as cloudinary} from 'cloudinary';
 import { authController } from "./controller/authController.js";
 import { userController } from "./controller/userController.js";
 import { songController } from "./controller/songController.js";
 
 dotenv.config();
+
+cloudinary.config({
+    cloud_name: process.env.CLOUNDINARY_NAME,
+    api_key: process.env.CLOUNDINARY_API_KEY,
+    api_secret: process.env.CLOUNDINARY_API_SECRET
+});
+
 
 const sv = express();
 sv.use(express.json());
