@@ -6,7 +6,7 @@ import multer from "multer";
 import {v2 as cloudinary} from 'cloudinary';
 import { authController } from "./controller/authController.js";
 import { userController } from "./controller/userController.js";
-import { songController } from "./controller/songController.js";
+import { songController  } from "./controller/songController.js";
 
 dotenv.config();
 
@@ -24,8 +24,8 @@ sv.use(morgan("combined"));
 
 sv.use('/auth', authController);
 sv.use('/users', userController);
-sv.use('/songs', songController);
-sv.use('/index', (req, res) => res.status(200).send('hello'))
+sv.use('/songs', songController );
+sv.use('/index', (req, res) => res.status(200).send('hello'));
 
 mongoose
   .connect(process.env.MONGODB)
