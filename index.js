@@ -7,7 +7,8 @@ import cookieParser from "cookie-parser";
 
 import { songController } from "./controller/songController.js";
 
-import router from "./routes/route.js";
+import authRoute from "./routes/authRoute.js";
+import userRoute from "./routes/userRoute.js";
 
 dotenv.config();
 
@@ -21,7 +22,8 @@ sv.use(morgan("combined"));
 
 sv.use("/songs", songController);
 
-sv.use("/v1/auth", router);
+sv.use("/v1/auth", authRoute);
+sv.use("/v1/user", userRoute);
 
 mongoose
   .connect(process.env.MONGODB)
