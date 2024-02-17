@@ -2,11 +2,22 @@ import mongoose from "mongoose";
 import express from "express";
 import morgan from "morgan";
 import dotenv from 'dotenv'
+import multer from "multer";
+import {v2 as cloundinary} from cloundinary;
 import { authController } from "./controller/authController.js";
 import { userController } from "./controller/userController.js";
 import { songController } from "./controller/songController.js";
 
 dotenv.config();
+
+cloundinary.config({
+    cloud_name: 'dxo324ch0',
+    api_key: '392236692491454',
+    api_secret: 'qYDv0H5lDyR81eueVbGoSsKGOHQ'
+});
+
+const storage = multer.memoryStorage();
+const upload = multer({storage : storage});
 
 const sv = express();
 sv.use(express.json());
