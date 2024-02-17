@@ -21,6 +21,27 @@ const authController = {
     }
   },
 
+  generateAccessToken: (user) => {
+    return jwt.sign(
+      {
+        id: user.id,
+        admin: user.admin,
+      },
+      process.env.JWT_ACCESS_KEY,
+      { expiresIn: "60s" }
+    );
+  },
+  generateRefreshToken: (user) => {
+    return jwt.sign(
+      {
+        id: user.id,
+        admin: user.admin,
+      },
+      process.env.JWT_ACCESS_KEY,
+      { expiresIn: "3d" }
+    );
+  },
+
   loginUser: async (req, res) => {
     try {
       const user = await User.findOne({ username: req.body.username });
@@ -33,18 +54,42 @@ const authController = {
       }
 
       if (user && password) {
-        jwt.sign(
-          {
-            id: user.id,
-            admin: user.admin,
-          },
-          process.env.JWT_ACCESS_KEY
-        ),
-          res.status(200).json(user);
+        const accessToken = authController.generateAccessToken(user);
+        const refreshToken = authController.generateRefreshToken(user);
+
+        res.cookie("refreshToken", refreshToken, {
+          httpOnly: true,
+          secure: false,
+          path: "/",
+          sameSite: "Strict",
+        });
+
+        const { password, ...others } = user._doc;
+        res.status(200).json({ ...others, accessToken });
       }
     } catch (error) {
       res.status(500).json(error);
     }
+  },
+
+  requestRefreshToken: async (req, res) => {
+    const refreshToken = req.cookies.refreshToken;
+    if (!refreshToken) return res.status(401).json("You're not authenticated");
+    jwt.verify(refreshToken, process.env.JWT_ACCESS_KEY, (err, user) => {
+      if (err) {
+        console.log(err);
+      }
+      const newAccessToken = authController.generateAccessToken(user);
+      const newRefreshToken = authController.generateRefreshToken(user);
+
+      res.cookie("refreshToken", newRefreshToken, {
+        httpOnly: true,
+        secure: false,
+        path: "/",
+        sameSite: "Strict",
+      });
+      res.status(200).json({ accessToken: newAccessToken });
+    });
   },
 };
 
