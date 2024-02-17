@@ -1,9 +1,10 @@
 import express from 'express';
 import {asyncCatch} from '../utils/asyncCatch.js';
-import { uploadSong } from '../services/songServies.js';
+import { uploadFile } from '../services/songServies.js';
+import { uploader } from '../utils/uploader.js';
 
 const songController = express.Router();
 
-songController.post('/upload', asyncCatch(uploadSong));
+songController.post('/', uploader.single('image'), asyncCatch(uploadFile));
 
 export {songController}

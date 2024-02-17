@@ -4,20 +4,12 @@ import morgan from "morgan";
 import dotenv from "dotenv";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import multer from "multer";
-import { v2 as cloudinary } from "cloudinary";
 
 import { songController } from "./controller/songController.js";
 
 import router from "./routes/route.js";
 
 dotenv.config();
-
-cloudinary.config({
-  cloud_name: process.env.CLOUNDINARY_NAME,
-  api_key: process.env.CLOUNDINARY_API_KEY,
-  api_secret: process.env.CLOUNDINARY_API_SECRET,
-});
 
 const sv = express();
 

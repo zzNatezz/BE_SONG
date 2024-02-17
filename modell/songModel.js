@@ -6,10 +6,10 @@ const songSchema = new Schema ({
     title : {type: String, require : true},
     author : {type: String, require : true},
     view : Number,
-    img : String,
-    createAt : {type: Date, default : Date.now},
-    link: {type: String, require : true},
-    Public : Boolean,
+    image : String,
+    createdAt : {type: Date, default : Date.now},
+    public : Boolean,
+    song : String
 })
 
 const songModel = mongoose.model('song', songSchema);
