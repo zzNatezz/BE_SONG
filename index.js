@@ -4,11 +4,9 @@ import morgan from "morgan";
 import dotenv from "dotenv";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-
-import { songController } from "./controller/songController.js";
-
 import authRoute from "./routes/authRoute.js";
 import userRoute from "./routes/userRoute.js";
+import songRoute from "./routes/songRoute.js";
 
 dotenv.config();
 
@@ -20,8 +18,7 @@ sv.use(cookieParser());
 sv.use(express.json());
 sv.use(morgan("combined"));
 
-sv.use("/songs", songController);
-
+sv.use("/v1/songs", songRoute);
 sv.use("/v1/auth", authRoute);
 sv.use("/v1/user", userRoute);
 

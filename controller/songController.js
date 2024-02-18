@@ -1,10 +1,20 @@
-import express from 'express';
-import {asyncCatch} from '../utils/asyncCatch.js';
-import { uploadFile } from '../services/songServies.js';
-import { uploader } from '../utils/uploader.js';
+import { songModel } from '../modell/songModel.js';
 
-const songController = express.Router();
-
-songController.post('/', uploader.single('image'), asyncCatch(uploadFile));
+const songController = {
+    testCreatSong : async (req, res) => {
+        const {title, author,image,song} = req.body;
+        const storeSong = await songModel.create({
+            title,
+            author,
+            image,
+            song,
+            public : true,
+        })
+        res.status(201).send({
+            data : storeSong,
+            mes : 'successful'
+        })
+    },
+}
 
 export {songController}
