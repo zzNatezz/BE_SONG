@@ -19,8 +19,7 @@ const songController = {
     getAllSong : async (req, res) => {
         const allSong = await songModel.find({})
         res.status(200).send({
-            data : allSong,
-            mes : "Completed"
+            allSong
         })
     }
 }
