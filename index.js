@@ -18,7 +18,20 @@ sv.use(cookieParser());
 sv.use(express.json());
 sv.use(morgan("combined"));
 
+
+sv.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  next();
+});
+
+
+
 sv.use("/v1/songs", songRoute);
+
 sv.use("/v1/auth", authRoute);
 sv.use("/v1/user", userRoute);
 
