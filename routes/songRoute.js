@@ -9,5 +9,6 @@ const songRoute = Router();
 // songRoute.post("/upload", uploadSong, asyncCatch(songUploadValid), asyncCatch(songController.creatSong));
 
 songRoute.post('/test/upload', songController.testCreatSong)
+songRoute.get('/test/upload', songController.getAllSong)
 
 export default songRoute;

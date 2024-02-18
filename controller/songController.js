@@ -1,4 +1,5 @@
 import { songModel } from '../modell/songModel.js';
+import axios from 'axios';
 
 const songController = {
     testCreatSong : async (req, res) => {
@@ -15,6 +16,13 @@ const songController = {
             mes : 'successful'
         })
     },
+    getAllSong : async (req, res) => {
+        const allSong = await songModel.find({})
+        res.status(200).send({
+            data : allSong,
+            mes : "Completed"
+        })
+    }
 }
 
 export {songController}
