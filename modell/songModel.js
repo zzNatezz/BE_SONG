@@ -9,7 +9,7 @@ const songSchema = new Schema ({
     image : String,
     createdAt : {type: Date, default : Date.now},
     public : Boolean,
-    song : String
+    song : {type:String, require: true}
 })
 
 const songModel = mongoose.model('song', songSchema);
