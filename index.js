@@ -11,14 +11,7 @@ import songRoute from "./routes/songRoute.js";
 dotenv.config();
 
 const sv = express();
-
-sv.use(
-  cors({
-    origin: "*",
-    methods: ["GET", "POST"],
-    credentials: true,
-  })
-);
+sv.use(cors());
 
 sv.use(cookieParser());
 
@@ -27,7 +20,7 @@ sv.use(morgan("combined"));
 
 sv.use("/v1/songs", songRoute);
 sv.use("/v1/auth", authRoute);
-sv.use("/v1/user", userRoute);
+sv.use("/v1/user", cors(), userRoute);
 
 mongoose
   .connect(process.env.MONGODB)
