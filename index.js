@@ -11,15 +11,14 @@ import songRoute from "./routes/songRoute.js";
 dotenv.config();
 
 const sv = express();
+const crosOptions = {
+  origin: "*",
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  preflightContinue: false,
+  optionsSuccessStatus: 204,
+};
 
-sv.use(
-  cors({
-    origin: "*",
-    methods: ["GET", "POST"],
-    credentials: true,
-  })
-);
-
+sv.use(cors(crosOptions));
 sv.use(cookieParser());
 
 sv.use(express.json());
