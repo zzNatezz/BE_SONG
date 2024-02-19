@@ -11,8 +11,14 @@ import songRoute from "./routes/songRoute.js";
 dotenv.config();
 
 const sv = express();
-sv.use(cors());
+const crosOptions = {
+  origin: "*",
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  preflightContinue: false,
+  optionsSuccessStatus: 204,
+};
 
+sv.use(cors(crosOptions));
 sv.use(cookieParser());
 
 sv.use(express.json());
@@ -20,7 +26,7 @@ sv.use(morgan("combined"));
 
 sv.use("/v1/songs", songRoute);
 sv.use("/v1/auth", authRoute);
-sv.use("/v1/user", cors(), userRoute);
+sv.use("/v1/user", userRoute);
 
 mongoose
   .connect(process.env.MONGODB)
