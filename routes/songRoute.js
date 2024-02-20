@@ -38,7 +38,7 @@ songRoute.post("/upload", uploader.array('files'), async (req, res)=>{
     })
 
 songRoute.post('/test/upload', songController.testCreatSong)
-songRoute.get('/test/upload', songController.getAllSong)
+songRoute.get('/upload', songController.getAllSong)
 
 
 export default songRoute;
