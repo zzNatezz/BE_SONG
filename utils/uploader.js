@@ -10,11 +10,7 @@ cloudinary.config({
   api_secret: process.env.CLOUNDINARY_API_SECRET,
 });
 
-const storage = multer.diskStorage({
-  // filename: function(req, file, cb){
-  //   cb(null, file.originalname)
-  // }
-});
+const storage = multer.memoryStorage();
 
 const uploader = multer({ storage: storage });
 

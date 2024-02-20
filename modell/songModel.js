@@ -8,7 +8,7 @@ const songSchema = new Schema ({
     view : Number,
     image : String,
     createdAt : {type: Date, default : Date.now},
-    public : Boolean,
+    isPublic : Boolean,
     song : String
 })
 
