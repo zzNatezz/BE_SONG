@@ -21,6 +21,12 @@ const userSchema = new mongoose.Schema(
       required: true,
       minLength: 6,
     },
+    avatar: {
+      type: String,
+    },
+    listenAgain: {
+      type: String,
+    },
     admin: {
       type: Boolean,
       default: false,
