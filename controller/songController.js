@@ -8,34 +8,51 @@ const songController = {
       allSong,
     });
   },
-  uploadSong : async (req, res)=>{
+  uploadSong: async (req, res) => {
+    const listFile = req.files;
     const dataImage = [];
     const dataAudio = [];
-    for( const file of listFile){
-        const dataUrl = `data:${file.mimetype};base64,${file.buffer.toString('base64')}`;
-        const fileName = file.originalname.split('.')[0];
-        const uploaded = await cloudinary.uploader.upload(dataUrl,{
-            public_id:fileName,
-            resource_type : 'auto'
-        })
-        uploaded.resource_type === "image" ? dataImage.push(uploaded) : dataAudio.push(uploaded)
+    for (const file of listFile) {
+      const dataUrl = `data:${file.mimetype};base64,${file.buffer.toString(
+        "base64"
+      )}`;
+      const fileName = file.originalname.split(".")[0];
+      const uploaded = await cloudinary.uploader.upload(dataUrl, {
+        public_id: fileName,
+        resource_type: "auto",
+      });
+      uploaded.resource_type === "image"
+        ? dataImage.push(uploaded)
+        : dataAudio.push(uploaded);
     }
     const song = await songModel.create({
-        title : req.body.title,
-        author : req.body.author,
-        image : dataImage[0].secure_url, 
-        song : dataAudio[0].secure_url,
-        isPublic : req.body.isPublic
-    })
-    res.status(201).send(`Song has been created.`)
+      title: req.body.title,
+      author: req.body.author,
+      image: [
+        { url: dataImage[0].secure_url },
+        { publicId : dataImage[0].public_id}
+      ],
+      song: [
+        { url : dataAudio[0].secure_url},
+        {publicId : dataAudio[0].public_id}
+    ],
+      isPublic: req.body.isPublic,
+    });
+    res.status(201).send({ img: dataImage, dataAudio: dataAudio });
   },
-  updateSong : async (req, res) =>{
-    const {songId} = req.params;
+  updateSong: async (req, res) => {
+    const { songId } = req.params;
     const getSong = await songModel.findById(songId);
-    getSong.author = req.body.author,
-    getSong.title = req.body.title,
-    res.status(201).send('Song has been updated')
-  }
+    (getSong.author = req.body.author),
+      (getSong.title = req.body.title),
+      res.status(201).send("Song has been updated");
+  },
+  // deleteSong : async(req, res) => {
+  //   const {songId} = req.params;
+  //   const findSong = await songModel.findById(songId);
+  //   if(!findSong) throw new Error("Unavailable song")
+  //   console.log(findSong.);
+  // }
 };
 
 export { songController };
