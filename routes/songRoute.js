@@ -10,7 +10,7 @@ const songRoute = Router();
 
 songRoute.post("/", uploader.array('files'), asyncCatch(songUploadValid), songController.uploadSong);
 songRoute.get('/', songController.getAllSong);
-songRoute.put('/:songId', uploader.array('files'), asyncCatch(songUpdateValid), songController.updateSong);
-
+// songRoute.put('/:songId', uploader.array('files'), asyncCatch(songUpdateValid), songController.updateSong);
+// songRoute.delete('/:songId', songController.deleteSong)
 
 export default songRoute;
