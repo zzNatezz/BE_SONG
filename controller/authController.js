@@ -12,8 +12,8 @@ const authController = {
         username: req.body.username,
         email: req.body.email,
         password: hashed,
-        avatar: req.body.avatar || " ",
-        listenAgain: req.body.listenAgain || " ",
+        avatar: req.body.avatar || null,
+        listenAgain: req.body.listenAgain || null,
       });
 
       const user = await newUser.save();
