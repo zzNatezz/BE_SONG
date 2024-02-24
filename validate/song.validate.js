@@ -1,4 +1,5 @@
 import { isObjectIdOrHexString } from "mongoose";
+import { songModel } from "../modell/songModel.js";
 
 export const songUploadValid = async (req, res, next) =>{
     const listFile = req.files;
@@ -14,5 +15,12 @@ export const songUpdateValid = async(req, res, next) =>{
     if(!isObjectIdOrHexString(req.params.songId)) throw new Error('song is unavailable');
     if(!req.body.title) throw new Error('Title can not be empty');
     if(!req.body.author) throw new Error('Author can not be empty');
+    next()
+}
+
+export const postListenedListValid = async(req, res, next) => {
+    if(!isObjectIdOrHexString(req.params.songId)) throw new Error('song is unavailable');
+    const findSong = await songModel.findById(req.params.songId);
+    if(!findSong) throw new Error('invalid song');
     next()
 }
