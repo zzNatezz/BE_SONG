@@ -59,19 +59,30 @@ const songController = {
     await songModel.findByIdAndDelete(songId)
     res.status(201).send(`Successful`)
   },
-  // ListenedList nay chua validate, phai check songId va phai check co nay trong all albums hay k.
   listnedList : async (req, res) =>{
     const {songId} = req.params;
     const listened = await listenedListModel.create({
       songs : songId
     });
-    res.status(201).send(listened);
+    res.status(201).send('OK!');
   },
    // Đợi có user mới tiếp tục làm tiếp -> cần chỉnh sửa lại litenedList Schenma
   updateListenedList : async(req, res) => {
     const {songId} = req.params;
-    const findList = await listenedListModel.findByIdAndUpdate('65d979d76681723e308b2790',{$push: {songs : songId}})
-    res.status(201).send("successfull.")
+    const listenedList = await listenedListModel.findById('65d979d76681723e308b2790');
+    const isExisting = listenedList.songs.includes(songId);
+    if(!isExisting){
+        listenedList.songs.unshift(songId);
+        if(listenedList.songs.length > 5){
+          listenedList.songs.pop()
+          listenedList.save()
+          return res.status(201).send(`ok!`)
+        }
+        listenedList.save()
+        return res.status(201).send(`ok!`)
+      }
+    else return res.status(201).send(`Ok!`)
+    
   },
   getListenedList : async (req, res) =>{
     const getListened = await listenedListModel.find().populate('songs');
