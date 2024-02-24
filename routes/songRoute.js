@@ -8,9 +8,11 @@ import { songModel } from "../modell/songModel.js";
 const songRoute = Router();
 
 
-songRoute.post("/", uploader.array('files'), asyncCatch(songUploadValid), songController.uploadSong);
-songRoute.get('/', songController.getAllSong);
+songRoute.post("/", uploader.array('files'), asyncCatch(songUploadValid), asyncCatch(songController.uploadSong));
+songRoute.get('/', asyncCatch(songController.getAllSong));
 // songRoute.put('/:songId', uploader.array('files'), asyncCatch(songUpdateValid), songController.updateSong);
-songRoute.delete('/:songId', songController.deleteSong)
+songRoute.delete('/:songId', asyncCatch(songController.deleteSong))
+songRoute.post('/listened/:songId', asyncCatch(songController.listnedList))
+songRoute.get('/listened', asyncCatch(songController.getListenedList))
 
 export default songRoute;

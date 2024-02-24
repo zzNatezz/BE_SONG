@@ -1,3 +1,4 @@
+import { listenedListModel } from "../modell/listenedList.js";
 import { songModel } from "../modell/songModel.js";
 import { cloudinary } from "../utils/uploader.js";
 
@@ -57,6 +58,18 @@ const songController = {
     }
     await songModel.findByIdAndDelete(songId)
     res.status(201).send(`Successful`)
+  },
+  // ListenedList nay chua validate, phai check songId va phai check co nay trong allalbum hay k.
+  listnedList : async (req, res) =>{
+    const {songId} = req.params;
+    const listened = await listenedListModel.create({
+      songs : [songId]
+    });
+    res.status(201).send(listened)
+  },
+  getListenedList : async (req, res) =>{
+    const getListened = await listenedListModel.find().populate('songs')
+    res.status(200).send(getListened)
   }
 };
 
