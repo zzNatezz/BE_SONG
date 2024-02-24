@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { listenedListModel } from "./listenedList.js";
 
 const userSchema = new mongoose.Schema(
   {
@@ -31,6 +32,10 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    listnedList : {
+      type : mongoose.Types.ObjectId,
+      ref : listenedListModel
+    }
   },
   { timestamps: true }
 );
