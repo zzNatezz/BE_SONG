@@ -1,14 +1,25 @@
 import { isObjectIdOrHexString } from "mongoose";
 import { songModel } from "../modell/songModel.js";
 
-export const songUploadValid = async (req, res, next) =>{
+export const songArrayUploadValid = async (req, res, next) =>{
     const listFile = req.files;
-    const {title, author, image, song} = req.body;
-    if(!title) throw new Error('Title is required');
-    if(!author) throw new Error('author is required');
     if(!listFile) throw new Error ('Invalid files')
     if(listFile > 2)throw new Error('Only accept 2 files')
     next()
+}
+
+export const songPutvalid = async(req, res, next) =>{
+    const {title, author} = req.body;
+    if(!title) throw new Error('Title is required');
+    if(!author) throw new Error('Author is required');
+    next()
+}
+
+export const songSingleUploadValid = async(req, res, next) =>{
+    const file = req.file;
+    if(!file) throw new Error ("invalid file");
+    if(file.length >1) throw new Error('only pick one file')
+    next();
 }
 
 export const songUpdateValid = async(req, res, next) =>{
