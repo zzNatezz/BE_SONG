@@ -10,30 +10,30 @@ const songController = {
     });
   },
   uploadSong: async (req, res) => {
-    const listFile = req.files; console.log(listFile);
-    // const dataImage = [];
-    // const dataAudio = [];
-    // for (const file of listFile) {
-    //   const dataUrl = `data:${file.mimetype};base64,${file.buffer?.toString(
-    //     "base64"
-    //   )}`;
-    //   const fileName = file.originalname.split(".")[0];
-    //   const uploaded = await cloudinary.uploader.upload(dataUrl, {
-    //     public_id: fileName,
-    //     resource_type: "auto",
-    //   });
-    //   uploaded.resource_type === "image"
-    //     ? dataImage.push(uploaded)
-    //     : dataAudio.push(uploaded);
-    // }
-    // await songModel.create({
-    //   title: req.body.title,
-    //   author: req.body.author,
-    //   image: { url: dataImage[0].secure_url, publicId: dataImage[0].public_id },
-    //   song: { url: dataAudio[0].secure_url, publicId: dataAudio[0].public_id },
+    const listFile = req.files;
+    const dataImage = [];
+    const dataAudio = [];
+    for (const file of listFile) {
+      const dataUrl = `data:${file.mimetype};base64,${file.buffer?.toString(
+        "base64"
+      )}`;
+      const fileName = file.originalname.split(".")[0];
+      const uploaded = await cloudinary.uploader.upload(dataUrl, {
+        public_id: fileName,
+        resource_type: "auto",
+      });
+      uploaded.resource_type === "image"
+        ? dataImage.push(uploaded)
+        : dataAudio.push(uploaded);
+    }
+    await songModel.create({
+      title: req.body.title,
+      author: req.body.author,
+      image: { url: dataImage[0].secure_url, publicId: dataImage[0].public_id },
+      song: { url: dataAudio[0].secure_url, publicId: dataAudio[0].public_id },
 
-    //   isPublic: req.body.isPublic,
-    // });
+      isPublic: req.body.isPublic,
+    });
     res.status(201).send(`Song has been created`);
   },
   update_song_tiltle_and_author: async (req, res) => {
