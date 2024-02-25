@@ -10,30 +10,30 @@ const songController = {
     });
   },
   uploadSong: async (req, res) => {
-    const listFile = req.files;
-    const dataImage = [];
-    const dataAudio = [];
-    for (const file of listFile) {
-      const dataUrl = `data:${file.mimetype};base64,${file.buffer.toString(
-        "base64"
-      )}`;
-      const fileName = file.originalname.split(".")[0];
-      const uploaded = await cloudinary.uploader.upload(dataUrl, {
-        public_id: fileName,
-        resource_type: "auto",
-      });
-      uploaded.resource_type === "image"
-        ? dataImage.push(uploaded)
-        : dataAudio.push(uploaded);
-    }
-    await songModel.create({
-      title: req.body.title,
-      author: req.body.author,
-      image: { url: dataImage[0].secure_url, publicId: dataImage[0].public_id },
-      song: { url: dataAudio[0].secure_url, publicId: dataAudio[0].public_id },
+    const listFile = req.files; console.log(listFile);
+    // const dataImage = [];
+    // const dataAudio = [];
+    // for (const file of listFile) {
+    //   const dataUrl = `data:${file.mimetype};base64,${file.buffer?.toString(
+    //     "base64"
+    //   )}`;
+    //   const fileName = file.originalname.split(".")[0];
+    //   const uploaded = await cloudinary.uploader.upload(dataUrl, {
+    //     public_id: fileName,
+    //     resource_type: "auto",
+    //   });
+    //   uploaded.resource_type === "image"
+    //     ? dataImage.push(uploaded)
+    //     : dataAudio.push(uploaded);
+    // }
+    // await songModel.create({
+    //   title: req.body.title,
+    //   author: req.body.author,
+    //   image: { url: dataImage[0].secure_url, publicId: dataImage[0].public_id },
+    //   song: { url: dataAudio[0].secure_url, publicId: dataAudio[0].public_id },
 
-      isPublic: req.body.isPublic,
-    });
+    //   isPublic: req.body.isPublic,
+    // });
     res.status(201).send(`Song has been created`);
   },
   update_song_tiltle_and_author: async (req, res) => {
@@ -44,20 +44,38 @@ const songController = {
     res.status(201).send("Song has been updated");
   },
   update_song_img: async (req, res) => {
-    const file = req.file;
+    const file = req.file; console.log(file);
+    const typeFile = file.mimetype.split("/")[0];
+    if(typeFile !== 'image')throw new Error ("only image is accept")
     const { songId } = req.params;
     const dataUrl = `data:${file.mimetype};base64,${file.buffer?.toString(
       "base64"
     )}`;
     const fileName = file.originalname.split(".")[0];
     const getSong = await songModel.findById(songId);
-    console.log(getSong.image[1].publicId);
-    // await cloudinary.uploader.destroy(getSong.image[0].publicId)
-    // const up_img = await cloudinary.uploader.upload(dataUrl,{public_id:fileName, resource_type: 'image'} );
-    // getSong.image[0].publicId = up_img.public_id;
-    // getSong.image[0].url = up_img.secure_url;
-    // getSong.save()
+    await cloudinary.uploader.destroy(getSong.image.publicId)
+    const up_img = await cloudinary.uploader.upload(dataUrl,{public_id:fileName, resource_type: 'image'} );
+    getSong.image.publicId = up_img.public_id;
+    getSong.image.url = up_img.secure_url;
+    getSong.save()
     res.status(201).send("image has been updated");
+  },
+  update_song_audio : async (req, res) => {
+    const file = req.file; 
+    const typefile = file.mimetype.split("/")[0];
+    if(typefile !== 'audio') throw new Error("only mp3 type is accept")
+    const { songId } = req.params;
+    const dataUrl = `data:${file.mimetype};base64,${file.buffer?.toString(
+      "base64"
+    )}`;
+    const fileName = file.originalname.split(".")[0];
+    const getSong = await songModel.findById(songId);
+    await cloudinary.uploader.destroy(getSong.song.publicId)
+    const up_audio = await cloudinary.uploader.upload(dataUrl,{public_id:fileName, resource_type: 'auto'} );
+    getSong.song.publicId = up_audio.public_id;
+    getSong.song.url = up_audio.secure_url;
+    getSong.save()
+    res.status(201).send("audio has been updated");
   },
   deleteSong: async (req, res) => {
     const { songId } = req.params;

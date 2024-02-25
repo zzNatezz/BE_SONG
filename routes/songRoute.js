@@ -30,6 +30,12 @@ songRoute.put(
   asyncCatch(songSingleUploadValid),
   asyncCatch(songController.update_song_img)
 );
+songRoute.put(
+  "/audio/:songId",
+  uploader.single("file"),
+  asyncCatch(songSingleUploadValid),
+  asyncCatch(songController.update_song_audio)
+);
 songRoute.delete("/:songId", asyncCatch(songController.deleteSong));
 songRoute.post(
   "/listened/:songId",
