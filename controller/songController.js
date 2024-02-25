@@ -1,4 +1,3 @@
-import { listenedListModel } from "../modell/listenedList.js";
 import { songModel } from "../modell/songModel.js";
 import { User } from "../modell/userModel.js";
 import { cloudinary } from "../utils/uploader.js";
@@ -60,7 +59,6 @@ const songController = {
     await songModel.findByIdAndDelete(songId)
     res.status(201).send(`Successful`)
   },
-   // Đợi có user mới tiếp tục làm tiếp -> cần chỉnh sửa lại litenedList Schenma
   updateListenedList : async(req, res) => {
     const {userId, songId} = req.params;
     const listenedList = await User.findById(userId);
@@ -76,8 +74,6 @@ const songController = {
         return res.status(201).send(`ok!`);
       }
     else return res.status(201).send(`Ok!`)
-    // res.status(200).send(listenedList)
-    
   },
   getListenedList : async (req, res) =>{
     const {userId} = req.params;
