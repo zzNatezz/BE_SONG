@@ -1,5 +1,6 @@
 import { listenedListModel } from "../modell/listenedList.js";
 import { songModel } from "../modell/songModel.js";
+import { User } from "../modell/userModel.js";
 import { cloudinary } from "../utils/uploader.js";
 
 const songController = {
@@ -59,22 +60,15 @@ const songController = {
     await songModel.findByIdAndDelete(songId)
     res.status(201).send(`Successful`)
   },
-  listnedList : async (req, res) =>{
-    const {songId} = req.params;
-    const listened = await listenedListModel.create({
-      songs : songId
-    });
-    res.status(201).send('OK!');
-  },
    // Đợi có user mới tiếp tục làm tiếp -> cần chỉnh sửa lại litenedList Schenma
   updateListenedList : async(req, res) => {
-    const {songId} = req.params;
-    const listenedList = await listenedListModel.findById('65d979d76681723e308b2790');
-    const isExisting = listenedList.songs.includes(songId);
+    const {userId, songId} = req.params;
+    const listenedList = await User.findById(userId);
+    const isExisting = listenedList.listenAgain.includes(songId);
     if(!isExisting){
-        listenedList.songs.unshift(songId);
-        if(listenedList.songs.length > 5){
-          listenedList.songs.pop()
+        listenedList.listenAgain.unshift(songId);
+        if(listenedList.listenAgain.length > 10){
+          listenedList.listenAgain.pop()
           listenedList.save()
           return res.status(201).send(`ok!`)
         }
@@ -82,10 +76,11 @@ const songController = {
         return res.status(201).send(`ok!`)
       }
     else return res.status(201).send(`Ok!`)
+    res.status(200).send(listenedList)
     
   },
   getListenedList : async (req, res) =>{
-    const getListened = await listenedListModel.find().populate('songs');
+    const getListened = await User.find().populate('songs');
     res.status(200).send(getListened);
   }
 };

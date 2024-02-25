@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { listenedListModel } from "./listenedList.js";
+import { songModel } from "./songModel.js";
 
 const userSchema = new mongoose.Schema(
   {
@@ -25,17 +25,16 @@ const userSchema = new mongoose.Schema(
     avatar: {
       type: String,
     },
-    listenAgain: {
-      type: String,
-    },
+    listenAgain: [
+      {
+      type: mongoose.Types.ObjectId,
+      ref : songModel
+    }
+  ],
     admin: {
       type: Boolean,
       default: false,
     },
-    listnedList : {
-      type : mongoose.Types.ObjectId,
-      ref : listenedListModel
-    }
   },
   { timestamps: true }
 );
