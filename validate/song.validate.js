@@ -18,7 +18,8 @@ export const songPutvalid = async(req, res, next) =>{
 export const songSingleUploadValid = async(req, res, next) =>{
     const file = req.file;
     if(!file) throw new Error ("invalid file");
-    if(file.length >1) throw new Error('only pick one file')
+    if(file.length > 1) throw new Error('only pick one file')
+    if(file.length == 0) throw new Error('please select file')
     next();
 }
 
