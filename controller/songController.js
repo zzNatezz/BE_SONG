@@ -68,19 +68,20 @@ const songController = {
     if(!isExisting){
         listenedList.listenAgain.unshift(songId);
         if(listenedList.listenAgain.length > 10){
-          listenedList.listenAgain.pop()
-          listenedList.save()
-          return res.status(201).send(`ok!`)
-        }
-        listenedList.save()
-        return res.status(201).send(`ok!`)
+          listenedList.listenAgain.pop();
+          listenedList.save();
+          return res.status(201).send(`ok!`);
+        };
+        listenedList.save();
+        return res.status(201).send(`ok!`);
       }
     else return res.status(201).send(`Ok!`)
-    res.status(200).send(listenedList)
+    // res.status(200).send(listenedList)
     
   },
   getListenedList : async (req, res) =>{
-    const getListened = await User.find().populate('songs');
+    const {userId} = req.params;
+    const getListened = await User.findById(userId).populate('listenAgain');
     res.status(200).send(getListened);
   }
 };
