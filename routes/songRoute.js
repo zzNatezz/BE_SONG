@@ -26,6 +26,6 @@ songRoute.post(
   asyncCatch(songController.listnedList)
 );
 songRoute.get("/listened", asyncCatch(songController.getListenedList));
-songRoute.put("/listened/:songId", asyncCatch(songController.updateListenedList));
+songRoute.put("/listened/:userId/:songId", asyncCatch(songController.updateListenedList));
 
 export default songRoute;
