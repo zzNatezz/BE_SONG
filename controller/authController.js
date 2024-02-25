@@ -2,6 +2,8 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { User } from "../modell/userModel.js";
 
+let refreshTokens = [];
+
 const authController = {
   registerUser: async (req, res) => {
     try {
@@ -58,7 +60,7 @@ const authController = {
       if (user && password) {
         const accessToken = authController.generateAccessToken(user);
         const refreshToken = authController.generateRefreshToken(user);
-
+        refreshTokens.push(refreshToken);
         res.cookie("refreshToken", refreshToken, {
           httpOnly: true,
           secure: false,
@@ -77,13 +79,17 @@ const authController = {
   requestRefreshToken: async (req, res) => {
     const refreshToken = req.cookies.refreshToken;
     if (!refreshToken) return res.status(401).json("You're not authenticated");
+    if (!refreshTokens.includes(refreshToken)) {
+      return res.status(403).json("Refresh token is not valid");
+    }
     jwt.verify(refreshToken, process.env.JWT_ACCESS_KEY, (err, user) => {
       if (err) {
         console.log(err);
       }
+      refreshTokens = refreshTokens.filter((token) => token !== refreshToken);
       const newAccessToken = authController.generateAccessToken(user);
       const newRefreshToken = authController.generateRefreshToken(user);
-
+      refreshTokens.push(newRefreshToken);
       res.cookie("refreshToken", newRefreshToken, {
         httpOnly: true,
         secure: false,
@@ -96,6 +102,9 @@ const authController = {
 
   logoutUser: async (req, res) => {
     res.clearCookie("refreshToken");
+    refreshTokens = refreshTokens.filter(
+      (token) => token !== req.cookies.refreshToken
+    );
     res.status(200).json("Logged out!");
   },
 };
