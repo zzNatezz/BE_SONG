@@ -48,17 +48,19 @@ const authController = {
 
   loginUser: async (req, res) => {
     try {
-      const user = await User.findOne({ username: req.body.username });
-      const email = await User.findOne({ email: req.body.email });
-      if (!user || !email) {
-        res.status(404).json("Wrong username! || email!");
+      const user = await User.findOne({
+        $or: [{ username: req.body.username }, { email: req.body.email }],
+      });
+      if (!user) {
+        res.status(404).json("Wrong username or email!");
+        return;
       }
       const password = await bcrypt.compare(req.body.password, user.password);
       if (!password) {
         res.status(404).json("Wrong password!");
       }
 
-      if (user || (email && password)) {
+      if (user && password) {
         const accessToken = authController.generateAccessToken(user);
         const refreshToken = authController.generateRefreshToken(user);
         refreshTokens.push(refreshToken);
