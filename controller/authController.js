@@ -49,15 +49,16 @@ const authController = {
   loginUser: async (req, res) => {
     try {
       const user = await User.findOne({ username: req.body.username });
-      if (!user) {
-        res.status(404).json("Wrong username!");
+      const email = await User.findOne({ email: req.body.email });
+      if (!user || !email) {
+        res.status(404).json("Wrong username! || email!");
       }
       const password = await bcrypt.compare(req.body.password, user.password);
       if (!password) {
         res.status(404).json("Wrong password!");
       }
 
-      if (user && password) {
+      if ((user && password) || (email && password)) {
         const accessToken = authController.generateAccessToken(user);
         const refreshToken = authController.generateRefreshToken(user);
         refreshTokens.push(refreshToken);
