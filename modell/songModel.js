@@ -20,6 +20,7 @@ const songSchema = new Schema({
       publicId: String,
     },
   ],
+
   updatedAt: Date,
 });
 

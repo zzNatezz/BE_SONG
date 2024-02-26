@@ -4,21 +4,38 @@ import { songController } from "../controller/songController.js";
 import { asyncCatch } from "../utils/asyncCatch.js";
 import {
   postListenedListValid,
-  songUpdateValid,
-  songUploadValid,
+  songArrayUploadValid,
+  songPutvalid,
+  songSingleUploadValid,
 } from "../validate/song.validate.js";
-import { songModel } from "../modell/songModel.js";
 
 const songRoute = Router();
 
 songRoute.post(
   "/",
   uploader.array("files"),
-  asyncCatch(songUploadValid),
+  asyncCatch(songArrayUploadValid),
+  asyncCatch(songPutvalid),
   asyncCatch(songController.uploadSong)
 );
 songRoute.get("/", asyncCatch(songController.getAllSong));
-// songRoute.put('/:songId', uploader.array('files'), asyncCatch(songUpdateValid), songController.updateSong);
+songRoute.put(
+  "/:songId",
+  asyncCatch(songPutvalid),
+  asyncCatch(songController.update_song_tiltle_and_author)
+);
+songRoute.put(
+  "/img/:songId",
+  uploader.single("file"),
+  asyncCatch(songSingleUploadValid),
+  asyncCatch(songController.update_song_img)
+);
+songRoute.put(
+  "/audio/:songId",
+  uploader.single("file"),
+  asyncCatch(songSingleUploadValid),
+  asyncCatch(songController.update_song_audio)
+);
 songRoute.delete("/:songId", asyncCatch(songController.deleteSong));
 songRoute.post(
   "/listened/:songId",
@@ -26,6 +43,8 @@ songRoute.post(
   asyncCatch(songController.listnedList)
 );
 songRoute.get("/listened/:userId", asyncCatch(songController.getListenedList));
-songRoute.put("/listened/:userId/:songId", asyncCatch(songController.updateListenedList));
-
+songRoute.put(
+  "/listened/:userId/:songId",
+  asyncCatch(songController.updateListenedList)
+);
 export default songRoute;
