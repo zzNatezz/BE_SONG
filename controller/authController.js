@@ -58,7 +58,7 @@ const authController = {
         res.status(404).json("Wrong password!");
       }
 
-      if ((user && password) || (email && password)) {
+      if (user || (email && password)) {
         const accessToken = authController.generateAccessToken(user);
         const refreshToken = authController.generateRefreshToken(user);
         refreshTokens.push(refreshToken);
