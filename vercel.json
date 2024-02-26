@@ -13,11 +13,5 @@
       "headers": { "Access-Control-Allow-Origin": "*" },
       "continue": true
     }
-  ],
-  "files": [
-    {
-      "source": "(.*)",
-      "destination": "(.*)"
-    }
   ]
 }
