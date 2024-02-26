@@ -6,6 +6,7 @@ const songSchema = new Schema({
   title: { type: String, require: true },
   author: { type: String, require: true },
   view: Number,
+
   image: {
     url: String,
     publicId: String,
@@ -17,6 +18,7 @@ const songSchema = new Schema({
     url: String,
     publicId: String,
   },
+
 
   updatedAt: Date,
 });
