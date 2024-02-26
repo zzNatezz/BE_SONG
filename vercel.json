@@ -16,8 +16,8 @@
   ],
   "files": [
     {
-      "source": "/path/to/your/files",
-      "destination": "/path/to/destination"
+      "source": "(.*)",
+      "destination": "(.*)"
     }
   ]
 }
