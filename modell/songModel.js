@@ -8,6 +8,7 @@ const songSchema = new Schema({
   view: Number,
   image: 
     {
+      type: Object,
       url: String,
       publicId: String,
     }
@@ -16,6 +17,7 @@ const songSchema = new Schema({
   isPublic: Boolean,
   song:
     {
+      type: Object,
       url: String,
       publicId: String,
     },
