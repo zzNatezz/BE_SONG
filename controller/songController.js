@@ -10,7 +10,7 @@ const songController = {
     });
   },
   uploadSong: async (req, res) => {
-    const listFile = req.files;
+    const listFile = req.files; //should be validate to only accept 1 img and 1 video
     const dataImage = [];
     const dataAudio = [];
     for (const file of listFile) {
@@ -101,7 +101,7 @@ const songController = {
       }
       listenedList.save();
       return res.status(201).send(`ok!`);
-    } else return res.status(201).send(`Ok!`);
+    } else return res.status(201).send(`Ok!`); // <-- bug because an existing song that is listening in listenedList do not go to index 0 after the song is finished
   },
   getListenedList: async (req, res) => {
     const { userId } = req.params;
