@@ -29,9 +29,9 @@ const songController = {
     await songModel.create({
       title: req.body.title,
       author: req.body.author,
+      view : 0,
       image: { url: dataImage[0].secure_url, publicId: dataImage[0].public_id },
       song: { url: dataAudio[0].secure_url, publicId: dataAudio[0].public_id },
-
       isPublic: req.body.isPublic,
     });
     res.status(201).send(`Song has been created`);
