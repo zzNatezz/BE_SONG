@@ -1,3 +1,4 @@
+
 import { songModel } from "../modell/songModel.js";
 import { User } from "../modell/userModel.js";
 import { cloudinary } from "../utils/uploader.js";
@@ -108,6 +109,17 @@ const songController = {
     const getListened = await User.findById(userId).populate("listenAgain");
     res.status(200).send(getListened);
   },
+  trendingList : async (req, res) => {
+    const trending = await songModel.find().sort({view : -1})
+    res.status(200).send('Succesfful')
+  },
+  countView : async (req, res) =>{
+    const {songId} = req.params;
+    const findSong = await songModel.findById(songId);
+    const updateView = findSong.view + 1;
+    await songModel.findByIdAndUpdate(songId, updateView);
+    res.status(200).send('OK');
+  }
 };
 
 export { songController };

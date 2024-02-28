@@ -47,4 +47,6 @@ songRoute.put(
   "/listened/:userId/:songId",
   asyncCatch(songController.updateListenedList)
 );
+songRoute.get('/trending', asyncCatch(songController.trendingList))
+songRoute.put('/trending/:songId', asyncCatch(songController.countView))
 export default songRoute;
