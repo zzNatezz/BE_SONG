@@ -111,7 +111,7 @@ const songController = {
   },
   trendingList : async (req, res) => {
     const trending = await songModel.find().sort({view : -1})
-    res.status(200).send('Succesfful')
+    res.status(200).send(trending)
   },
   countView : async (req, res) =>{
     const {songId} = req.params;
