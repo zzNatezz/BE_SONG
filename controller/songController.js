@@ -110,14 +110,15 @@ const songController = {
     res.status(200).send(getListened);
   },
   trendingList : async (req, res) => {
-    const trending = await songModel.find().sort({view : -1})
-    res.status(200).send(trending)
+    const trending = await songModel.find().sort({view : -1});
+    const fakeTrending = [...trending].splice(0,10);
+    res.status(200).send(fakeTrending)
   },
   countView : async (req, res) =>{
     const {songId} = req.params;
     const findSong = await songModel.findById(songId);
     const updateView = findSong.view + 1;
-    await songModel.findByIdAndUpdate(songId, updateView);
+    await songModel.findByIdAndUpdate(songId, {view : updateView});
     res.status(200).send('OK');
   }
 };
