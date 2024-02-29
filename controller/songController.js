@@ -120,6 +120,13 @@ const songController = {
     const updateView = findSong.view + 1;
     await songModel.findByIdAndUpdate(songId, {view : updateView});
     res.status(200).send('OK');
+  },
+  recommendList : async (req, res) => {
+    const {userId} = req.params;
+    const data = await User.findById(userId).populate('listenAgain');
+    const fav_author = data.listenAgain.map(x => x.author)
+    const recom_song = await songModel.find({author : {$in : fav_author}})
+    res.status(200).send(recom_song.splice(0,10))
   }
 };
 
