@@ -124,11 +124,24 @@ const songController = {
   },
   recommendList : async (req, res) => {
     const {userId} = req.params;
-    const data = await User.findById(userId).populate('listenAgain');
-    const fav_author = data.listenAgain.map(x => x.author);
-    const recom_song = await songModel.find({author : {$in : fav_author}});
+    const findUser = await User.findById(userId).populate('listenAgain');
+    const listenAgainList = findUser.listenAgain
+
+    const findTrendingList = await songModel.find().sort({view : -1});
+    const fromIndex10 = findTrendingList.splice(10,findTrendingList.length); 
+
+    const combineList = [...listenAgainList,...fromIndex10];
+    const allSong = await songModel.find();
+    const recom_song = [];
+
+    for(let i = 0; i<combineList.length; i++){
+      for(let j = 0; j < allSong.length; j++){
+        if(combineList[i] !== allSong[j]) {recom_song.push(allSong[j])}
+      }
+    }
+
     const shuffle_recom_song = shuffleIndex(recom_song)
-    res.status(200).send(shuffle_recom_song.splice(0,10))
+    res.status(200).send(shuffle_recom_song)
   } 
 };
 
