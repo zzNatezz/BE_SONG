@@ -1,6 +1,7 @@
 
 import { songModel } from "../modell/songModel.js";
 import { User } from "../modell/userModel.js";
+import shuffleIndex from "../utils/shuffleIndex.js";
 import { cloudinary } from "../utils/uploader.js";
 
 const songController = {
@@ -124,10 +125,11 @@ const songController = {
   recommendList : async (req, res) => {
     const {userId} = req.params;
     const data = await User.findById(userId).populate('listenAgain');
-    const fav_author = data.listenAgain.map(x => x.author)
-    const recom_song = await songModel.find({author : {$in : fav_author}})
-    res.status(200).send(recom_song.splice(0,10))
-  }
+    const fav_author = data.listenAgain.map(x => x.author);
+    const recom_song = await songModel.find({author : {$in : fav_author}});
+    const shuffle_recom_song = shuffleIndex(recom_song.splice(0,10))
+    res.status(200).send(shuffle_recom_song)
+  } 
 };
 
 export { songController };
