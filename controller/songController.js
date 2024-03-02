@@ -145,7 +145,7 @@ const songController = {
     }
 
     const shuffle_recom_song = shuffleIndex(recomm_song);
-    res.status(200).send(shuffle_recom_song.splice(0,5));
+    res.status(200).send(shuffle_recom_song.splice(0,6));
   },
 };
 
