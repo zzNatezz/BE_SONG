@@ -1,4 +1,3 @@
-
 import { songModel } from "../modell/songModel.js";
 import { User } from "../modell/userModel.js";
 import shuffleIndex from "../utils/shuffleIndex.js";
@@ -31,7 +30,7 @@ const songController = {
     await songModel.create({
       title: req.body.title,
       author: req.body.author,
-      view : 0,
+      view: 0,
       image: { url: dataImage[0].secure_url, publicId: dataImage[0].public_id },
       song: { url: dataAudio[0].secure_url, publicId: dataAudio[0].public_id },
       isPublic: req.body.isPublic,
@@ -46,37 +45,44 @@ const songController = {
     res.status(201).send("Song has been updated");
   },
   update_song_img: async (req, res) => {
-    const file = req.file; console.log(file);
+    const file = req.file;
+    console.log(file);
     const typeFile = file.mimetype.split("/")[0];
-    if(typeFile !== 'image')throw new Error ("only image is accept")
+    if (typeFile !== "image") throw new Error("only image is accept");
     const { songId } = req.params;
     const dataUrl = `data:${file.mimetype};base64,${file.buffer?.toString(
       "base64"
     )}`;
     const fileName = file.originalname.split(".")[0];
     const getSong = await songModel.findById(songId);
-    await cloudinary.uploader.destroy(getSong.image.publicId)
-    const up_img = await cloudinary.uploader.upload(dataUrl,{public_id:fileName, resource_type: 'image'} );
+    await cloudinary.uploader.destroy(getSong.image.publicId);
+    const up_img = await cloudinary.uploader.upload(dataUrl, {
+      public_id: fileName,
+      resource_type: "image",
+    });
     getSong.image.publicId = up_img.public_id;
     getSong.image.url = up_img.secure_url;
-    getSong.save()
+    getSong.save();
     res.status(201).send("image has been updated");
   },
-  update_song_audio : async (req, res) => {
-    const file = req.file; 
+  update_song_audio: async (req, res) => {
+    const file = req.file;
     const typefile = file.mimetype.split("/")[0];
-    if(typefile !== 'audio') throw new Error("only mp3 type is accept")
+    if (typefile !== "audio") throw new Error("only mp3 type is accept");
     const { songId } = req.params;
     const dataUrl = `data:${file.mimetype};base64,${file.buffer?.toString(
       "base64"
     )}`;
     const fileName = file.originalname.split(".")[0];
     const getSong = await songModel.findById(songId);
-    await cloudinary.uploader.destroy(getSong.song.publicId)
-    const up_audio = await cloudinary.uploader.upload(dataUrl,{public_id:fileName, resource_type: 'auto'} );
+    await cloudinary.uploader.destroy(getSong.song.publicId);
+    const up_audio = await cloudinary.uploader.upload(dataUrl, {
+      public_id: fileName,
+      resource_type: "auto",
+    });
     getSong.song.publicId = up_audio.public_id;
     getSong.song.url = up_audio.secure_url;
-    getSong.save()
+    getSong.save();
     res.status(201).send("audio has been updated");
   },
   deleteSong: async (req, res) => {
@@ -110,39 +116,36 @@ const songController = {
     const getListened = await User.findById(userId).populate("listenAgain");
     res.status(200).send(getListened);
   },
-  trendingList : async (req, res) => {
-    const trending = await songModel.find().sort({view : -1});
-    const fakeTrending = [...trending].splice(0,10);
-    res.status(200).send(fakeTrending)
+  trendingList: async (req, res) => {
+    const trending = await songModel.find().sort({ view: -1 });
+    const fakeTrending = [...trending].splice(0, 10);
+    res.status(200).send(fakeTrending);
   },
-  countView : async (req, res) =>{
-    const {songId} = req.params;
+  countView: async (req, res) => {
+    const { songId } = req.params;
     const findSong = await songModel.findById(songId);
     const updateView = findSong.view + 1;
-    await songModel.findByIdAndUpdate(songId, {view : updateView});
-    res.status(200).send('OK');
+    await songModel.findByIdAndUpdate(songId, { view: updateView });
+    res.status(200).send("OK");
   },
-  recommendList : async (req, res) => {
-    const {userId} = req.params;
-    const findUser = await User.findById(userId).populate('listenAgain');
-    const listenAgainList = findUser.listenAgain
+  recommendList: async (req, res) => {
+    const { userId } = req.params;
+    const findUser = await User.findById(userId).populate("listenAgain");
+    const listenAgainList = findUser.listenAgain;
 
-    const findTrendingList = await songModel.find().sort({view : -1});
-    const fromIndex10 = findTrendingList.splice(10,findTrendingList.length); 
+    const findTrendingList = await songModel.find().sort({ view: -1 });
+    const fromIndex10 = findTrendingList.splice(10, findTrendingList.length);
+    const recomm_song = [];
+    const non_recom_song = [];
 
-    const combineList = [...listenAgainList,...fromIndex10];
-    const allSong = await songModel.find();
-    const recom_song = [];
-
-    for(let i = 0; i<combineList.length; i++){
-      for(let j = 0; j < allSong.length; j++){
-        if(combineList[i] !== allSong[j]) {recom_song.push(allSong[j])}
-      }
+    for (let i = 0; i < fromIndex10.length; i++) {
+      const checkI = listenAgainList.find(x => x = fromIndex10[i]);
+      checkI.length === 1 ? non_recom_song.push(fromIndex10[i]) : recomm_song.push(fromIndex10[i])
     }
 
-    const shuffle_recom_song = shuffleIndex(recom_song)
-    res.status(200).send(shuffle_recom_song)
-  } 
+    const shuffle_recom_song = shuffleIndex(recomm_song);
+    res.status(200).send(shuffle_recom_song);
+  },
 };
 
 export { songController };
