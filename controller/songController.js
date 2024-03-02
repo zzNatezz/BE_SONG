@@ -127,8 +127,8 @@ const songController = {
     const data = await User.findById(userId).populate('listenAgain');
     const fav_author = data.listenAgain.map(x => x.author);
     const recom_song = await songModel.find({author : {$in : fav_author}});
-    const shuffle_recom_song = shuffleIndex(recom_song.splice(0,10))
-    res.status(200).send(shuffle_recom_song)
+    const shuffle_recom_song = shuffleIndex(recom_song)
+    res.status(200).send(shuffle_recom_song.splice(0,10))
   } 
 };
 
