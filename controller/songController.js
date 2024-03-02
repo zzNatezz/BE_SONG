@@ -132,6 +132,7 @@ const songController = {
     const { userId } = req.params;
     const findUser = await User.findById(userId).populate("listenAgain");
     const listenAgainList = findUser.listenAgain;
+    const getIdListenedList = listenAgainList.map(song => song._id)
 
     const findTrendingList = await songModel.find().sort({ view: -1 });
     const fromIndex10 = findTrendingList.splice(10, findTrendingList.length);
@@ -139,12 +140,12 @@ const songController = {
     const non_recom_song = [];
 
     for (let i = 0; i < fromIndex10.length; i++) {
-      const checkI = listenAgainList.find(x => x = fromIndex10[i]);
+      const checkI = getIdListenedList.find(x => x = fromIndex10[i]._id);
       checkI.length === 1 ? non_recom_song.push(fromIndex10[i]) : recomm_song.push(fromIndex10[i])
     }
 
     const shuffle_recom_song = shuffleIndex(recomm_song);
-    res.status(200).send(shuffle_recom_song);
+    res.status(200).send(shuffle_recom_song.splice(0,5));
   },
 };
 
