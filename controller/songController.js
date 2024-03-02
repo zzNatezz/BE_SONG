@@ -12,7 +12,7 @@ const songController = {
     });
   },
   uploadSong: async (req, res) => {
-    const listFile = req.files; //should be validate to only accept 1 img and 1 video
+    const listFile = req.files;
     const dataImage = [];
     const dataAudio = [];
     for (const file of listFile) {
