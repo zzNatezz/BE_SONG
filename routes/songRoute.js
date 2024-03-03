@@ -12,7 +12,7 @@ import {
 const songRoute = Router();
 
 songRoute.post(
-  "/",
+  "/:userId",
   uploader.array("files"),
   asyncCatch(songArrayUploadValid),
   asyncCatch(songPutvalid),
@@ -50,4 +50,5 @@ songRoute.put(
 songRoute.get('/trending', asyncCatch(songController.trendingList));
 songRoute.put('/trending/:songId', asyncCatch(songController.countView));
 songRoute.get('/recommend/:userId', asyncCatch(songController.recommendList));
+// songRoute.put('/uploadlike', songController.uploadLike);
 export default songRoute;

@@ -11,6 +11,7 @@ const songController = {
     });
   },
   uploadSong: async (req, res) => {
+    const {userId} = req.params
     const listFile = req.files;
     const dataImage = [];
     const dataAudio = [];
@@ -34,6 +35,8 @@ const songController = {
       image: { url: dataImage[0].secure_url, publicId: dataImage[0].public_id },
       song: { url: dataAudio[0].secure_url, publicId: dataAudio[0].public_id },
       isPublic: req.body.isPublic,
+      like : false,
+      user : userId
     });
     res.status(201).send(`Song has been created`);
   },
@@ -146,7 +149,7 @@ const songController = {
 
     const shuffle_recom_song = shuffleIndex(recomm_song);
     res.status(200).send(shuffle_recom_song.splice(0,6));
-  },
+  }
 };
 
 export { songController };
