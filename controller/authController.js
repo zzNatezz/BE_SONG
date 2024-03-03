@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { User } from "../modell/userModel.js";
+import { likeModel } from "../modell/likeModel.js";
 
 let refreshTokens = [];
 
@@ -17,14 +18,18 @@ const authController = {
         avatar: req.body.avatar || null,
         listenAgain: req.body.listenAgain || [],
       });
-
       const user = await newUser.save();
+
+      await likeModel.create({
+        user : newUser._id.toString(),
+        songs : []
+      })
+
       res.status(200).json(user);
     } catch (error) {
       res.status(500).json(error);
     }
   },
-
   generateAccessToken: (user) => {
     return jwt.sign(
       {

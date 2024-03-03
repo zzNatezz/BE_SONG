@@ -18,7 +18,7 @@ const songSchema = new Schema({
   },
   updatedAt: Date,
   like : Boolean,
-  user : {type : String, require: true}
+  user : {type : String, require: true} 
 });
 
 const songModel = mongoose.model("song", songSchema);

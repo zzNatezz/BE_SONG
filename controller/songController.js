@@ -11,7 +11,7 @@ const songController = {
     });
   },
   uploadSong: async (req, res) => {
-    const {userId} = req.params
+    const { userId } = req.params;
     const listFile = req.files;
     const dataImage = [];
     const dataAudio = [];
@@ -35,8 +35,8 @@ const songController = {
       image: { url: dataImage[0].secure_url, publicId: dataImage[0].public_id },
       song: { url: dataAudio[0].secure_url, publicId: dataAudio[0].public_id },
       isPublic: req.body.isPublic,
-      like : false,
-      user : userId
+      like: false,
+      user: userId,
     });
     res.status(201).send(`Song has been created`);
   },
@@ -107,7 +107,7 @@ const songController = {
       listenedList.listenAgain.unshift(songId);
       if (listenedList.listenAgain.length > 10) {
         listenedList.listenAgain.pop();
-        listenedList.save();
+        await listenedList.save();
         return res.status(201).send(`ok!`);
       }
       listenedList.save();
@@ -135,7 +135,7 @@ const songController = {
     const { userId } = req.params;
     const findUser = await User.findById(userId).populate("listenAgain");
     const listenAgainList = findUser.listenAgain;
-    const getIdListenedList = listenAgainList.map(song => song._id)
+    const getIdListenedList = listenAgainList.map((song) => song._id);
 
     const findTrendingList = await songModel.find().sort({ view: -1 });
     const fromIndex10 = findTrendingList.splice(10, findTrendingList.length);
@@ -143,12 +143,14 @@ const songController = {
     const non_recom_song = [];
 
     for (let i = 0; i < fromIndex10.length; i++) {
-      const checkI = getIdListenedList.find(x => x = fromIndex10[i]._id);
-      checkI.length === 1 ? non_recom_song.push(fromIndex10[i]) : recomm_song.push(fromIndex10[i])
+      const checkI = getIdListenedList.find((x) => (x = fromIndex10[i]._id));
+      checkI.length === 1
+        ? non_recom_song.push(fromIndex10[i])
+        : recomm_song.push(fromIndex10[i]);
     }
 
     const shuffle_recom_song = shuffleIndex(recomm_song);
-    res.status(200).send(shuffle_recom_song.splice(0,6));
+    res.status(200).send(shuffle_recom_song.splice(0, 6));
   }
 };
 

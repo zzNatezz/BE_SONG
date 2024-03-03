@@ -50,5 +50,5 @@ songRoute.put(
 songRoute.get('/trending', asyncCatch(songController.trendingList));
 songRoute.put('/trending/:songId', asyncCatch(songController.countView));
 songRoute.get('/recommend/:userId', asyncCatch(songController.recommendList));
-// songRoute.put('/uploadlike', songController.uploadLike);
+
 export default songRoute;

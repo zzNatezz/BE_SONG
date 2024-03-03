@@ -27,10 +27,10 @@ const userSchema = new mongoose.Schema(
     },
     listenAgain: [
       {
-      type: mongoose.Types.ObjectId,
-      ref : songModel
-    }
-  ],
+        type: mongoose.Types.ObjectId,
+        ref: songModel,
+      },
+    ],
     admin: {
       type: Boolean,
       default: false,
