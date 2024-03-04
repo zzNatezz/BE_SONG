@@ -113,8 +113,14 @@ const songController = {
       listenedList.save();
       return res.status(201).send(`ok!`);
     } else{
-	return res.status(201).send(`ok!`); //<-bug nay chau sua dc
-},
+	const getSong = await songModel.findById(songId);
+	const getIndex = listenedList.listenAgain.indexOf(songId);
+	listenedList.listenAgain.splice(getIndex ,1);
+	listenedList.listenAgain.unshift(getSong)
+	await listenedList.save()
+	return res.status(201).send(`ok!`);
+};
+  },
   getListenedList: async (req, res) => {
     const { userId } = req.params;
     const getListened = await User.findById(userId).populate("listenAgain");
