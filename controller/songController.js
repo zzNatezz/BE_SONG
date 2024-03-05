@@ -2,6 +2,7 @@ import { songModel } from "../modell/songModel.js";
 import { User } from "../modell/userModel.js";
 import shuffleIndex from "../utils/shuffleIndex.js";
 import { cloudinary } from "../utils/uploader.js";
+import ytdl from "ytdl-core";
 
 const songController = {
   getAllSong: async (req, res) => {
@@ -112,14 +113,14 @@ const songController = {
       }
       listenedList.save();
       return res.status(201).send(`ok!`);
-    } else{
-	const getSong = await songModel.findById(songId);
-	const getIndex = listenedList.listenAgain.indexOf(songId);
-	listenedList.listenAgain.splice(getIndex ,1);
-	listenedList.listenAgain.unshift(getSong)
-	await listenedList.save()
-	return res.status(201).send(`ok!`);
-};
+    } else {
+      const getSong = await songModel.findById(songId);
+      const getIndex = listenedList.listenAgain.indexOf(songId);
+      listenedList.listenAgain.splice(getIndex, 1);
+      listenedList.listenAgain.unshift(getSong);
+      await listenedList.save();
+      return res.status(201).send(`ok!`);
+    }
   },
   getListenedList: async (req, res) => {
     const { userId } = req.params;
@@ -158,7 +159,32 @@ const songController = {
 
     const shuffle_recom_song = shuffleIndex(recomm_song);
     res.status(200).send(shuffle_recom_song.splice(0, 6));
-  }
+  },
+  urlYtb: async (req, res) => {
+    try {
+      const videoUrl = req.query.url;
+      if (!videoUrl) {
+        return res.status(400).json({ error: "Missing video URL parameter" });
+      }
+      let info = await ytdl.getInfo(videoUrl);
+      let format = ytdl.chooseFormat(info.formats, { quality: "18" });
+
+      res.json({
+        title: info.videoDetails.title,
+        author: info.videoDetails.author.name,
+        cover:
+          info.videoDetails.thumbnail.thumbnails[
+            info.videoDetails.thumbnail.thumbnails.length - 1
+          ].url,
+        quality: format.qualityLabel,
+        mimeType: format.mimeType,
+        url: format.url,
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  },
 };
 
 export { songController };

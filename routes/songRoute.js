@@ -47,8 +47,10 @@ songRoute.put(
   "/listened/:userId/:songId",
   asyncCatch(songController.updateListenedList)
 );
-songRoute.get('/trending', asyncCatch(songController.trendingList));
-songRoute.put('/trending/:songId', asyncCatch(songController.countView));
-songRoute.get('/recommend/:userId', asyncCatch(songController.recommendList));
+songRoute.get("/trending", asyncCatch(songController.trendingList));
+songRoute.put("/trending/:songId", asyncCatch(songController.countView));
+songRoute.get("/recommend/:userId", asyncCatch(songController.recommendList));
+
+songRoute.get("/ytb", asyncCatch(songController.urlYtb));
 
 export default songRoute;
