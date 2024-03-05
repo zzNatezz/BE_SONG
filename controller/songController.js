@@ -4,6 +4,10 @@ import shuffleIndex from "../utils/shuffleIndex.js";
 import { cloudinary } from "../utils/uploader.js";
 import ytdl from "ytdl-core";
 
+const ffmpegPath = require("@ffmpeg-installer/ffmpeg").path;
+const ffmpeg = require("fluent-ffmpeg");
+ffmpeg.setFfmpegPath(ffmpegPath);
+
 const songController = {
   getAllSong: async (req, res) => {
     const allSong = await songModel.find({});
@@ -160,6 +164,40 @@ const songController = {
     const shuffle_recom_song = shuffleIndex(recomm_song);
     res.status(200).send(shuffle_recom_song.splice(0, 6));
   },
+
+  convertToMp3: async (videoUrl) => {
+    try {
+      if (!videoUrl) {
+        throw new Error("Missing video URL parameter");
+      }
+
+      const info = await ytdl.getInfo(videoUrl);
+      const format = ytdl.chooseFormat(info.formats, { quality: "18" });
+
+      const mp3FileName = `${info.videoDetails.title}.mp3`;
+
+      await new Promise((resolve, reject) => {
+        ffmpeg(format.url)
+          .outputOptions("-vn", "-ab", "128k", "-ar", "44100")
+          .toFormat("mp3")
+          .on("end", () => {
+            console.log(`Converted ${mp3FileName}`);
+            resolve();
+          })
+          .on("error", (err) => {
+            console.error(`Error converting file: ${err}`);
+            reject(err);
+          })
+          .save(mp3FileName);
+      });
+
+      return mp3FileName;
+    } catch (error) {
+      console.error(error);
+      throw new Error("Internal Server Error");
+    }
+  },
+
   urlYtb: async (req, res) => {
     try {
       const videoUrl = req.query.url;
@@ -169,16 +207,17 @@ const songController = {
       let info = await ytdl.getInfo(videoUrl);
       let format = ytdl.chooseFormat(info.formats, { quality: "18" });
 
+      const mp3FileName = await songController.convertToMp3(videoUrl);
+
       res.json({
         title: info.videoDetails.title,
         author: info.videoDetails.author.name,
         cover:
-          info.videoDetails.thumbnail.thumbnails[
-            info.videoDetails.thumbnail.thumbnails.length - 1
-          ].url,
+          info.videoDetails.thumbnails[info.videoDetails.thumbnails.length - 1]
+            .url,
         quality: format.qualityLabel,
         mimeType: format.mimeType,
-        url: format.url,
+        url: mp3FileName,
       });
     } catch (error) {
       console.error(error);
