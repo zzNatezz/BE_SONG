@@ -165,38 +165,38 @@ const songController = {
     res.status(200).send(shuffle_recom_song.splice(0, 6));
   },
 
-  convertToMp3: async (videoUrl) => {
-    try {
-      if (!videoUrl) {
-        throw new Error("Missing video URL parameter");
-      }
+  // convertToMp3: async (videoUrl) => {
+  //   try {
+  //     if (!videoUrl) {
+  //       throw new Error("Missing video URL parameter");
+  //     }
 
-      const info = await ytdl.getInfo(videoUrl);
-      const format = ytdl.chooseFormat(info.formats, { quality: "18" });
+  //     const info = await ytdl.getInfo(videoUrl);
+  //     const format = ytdl.chooseFormat(info.formats, { quality: "18" });
 
-      const mp3FileName = `${info.videoDetails.title}.mp3`;
+  //     const mp3FileName = `${info.videoDetails.title}.mp3`;
 
-      await new Promise((resolve, reject) => {
-        ffmpeg(format.url)
-          .outputOptions("-vn", "-ab", "128k", "-ar", "44100")
-          .toFormat("mp3")
-          .on("end", () => {
-            console.log(`Converted ${mp3FileName}`);
-            resolve();
-          })
-          .on("error", (err) => {
-            console.error(`Error converting file: ${err}`);
-            reject(err);
-          })
-          .save(mp3FileName);
-      });
+  //     await new Promise((resolve, reject) => {
+  //       ffmpeg(format.url)
+  //         .outputOptions("-vn", "-ab", "128k", "-ar", "44100")
+  //         .toFormat("mp3")
+  //         .on("end", () => {
+  //           console.log(`Converted ${mp3FileName}`);
+  //           resolve();
+  //         })
+  //         .on("error", (err) => {
+  //           console.error(`Error converting file: ${err}`);
+  //           reject(err);
+  //         })
+  //         .save(mp3FileName);
+  //     });
 
-      return mp3FileName;
-    } catch (error) {
-      console.error(error);
-      throw new Error("Internal Server Error");
-    }
-  },
+  //     return mp3FileName;
+  //   } catch (error) {
+  //     console.error(error);
+  //     throw new Error("Internal Server Error");
+  //   }
+  // },
 
   urlYtb: async (req, res) => {
     try {
@@ -205,9 +205,10 @@ const songController = {
         return res.status(400).json({ error: "Missing video URL parameter" });
       }
       let info = await ytdl.getInfo(videoUrl);
-      let format = ytdl.chooseFormat(info.formats, { quality: "18" });
+      let format = ytdl.filterFormats(info.formats, "audioonly");
+      format = ytdl.chooseFormat(info.formats, { quality: "140" });
 
-      const mp3FileName = await songController.convertToMp3(videoUrl);
+      // const mp3FileName = await songController.convertToMp3(videoUrl);
 
       res.json({
         title: info.videoDetails.title,
@@ -217,7 +218,7 @@ const songController = {
             .url,
         quality: format.qualityLabel,
         mimeType: format.mimeType,
-        url: mp3FileName,
+        url: format.url,
       });
     } catch (error) {
       console.error(error);
