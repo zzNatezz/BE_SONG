@@ -43,33 +43,21 @@ const songController = {
   },
   uploadSongYtb: async (req, res) => {
     const { userId } = req.params;
-
-    if (
-      !req.body.title ||
-      !req.body.author ||
-      !req.body.cover ||
-      !req.body.src ||
-      req.body.isPublic === undefined
-    ) {
-      return res.status(400).send("Missing required fields");
-    }
-
     try {
-      await songModel.create({
+      const newSong = await new songModel({
         title: req.body.title,
         author: req.body.author,
         view: 0,
         image: { url: req.body.cover, publicId: "" },
-        song: { url: req.body.src, publicId: "" },
+        song: { url: req.body.url, publicId: "" },
         isPublic: req.body.isPublic,
         like: false,
         user: userId,
       });
-
-      res.status(201).send("Song has been created");
+      const song = await newSong.save();
+      res.status(200).json(song);
     } catch (error) {
-      console.error(error);
-      res.status(500).send("Internal Server Error");
+      res.status(500).json(error);
     }
   },
   update_song_tiltle_and_author: async (req, res) => {
