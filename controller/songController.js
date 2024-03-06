@@ -43,17 +43,34 @@ const songController = {
   },
   uploadSongYtb: async (req, res) => {
     const { userId } = req.params;
-    await songModel.create({
-      title: req.body.title,
-      author: req.body.author,
-      view: 0,
-      image: { url: req.body.cover, publicId: "" },
-      song: { url: req.body.src, publicId: "" },
-      isPublic: req.body.isPublic,
-      like: false,
-      user: userId,
-    });
-    res.status(201).send(`Song has been created`);
+
+    if (
+      !req.body.title ||
+      !req.body.author ||
+      !req.body.cover ||
+      !req.body.src ||
+      req.body.isPublic === undefined
+    ) {
+      return res.status(400).send("Missing required fields");
+    }
+
+    try {
+      await songModel.create({
+        title: req.body.title,
+        author: req.body.author,
+        view: 0,
+        image: { url: req.body.cover, publicId: "" },
+        song: { url: req.body.src, publicId: "" },
+        isPublic: req.body.isPublic,
+        like: false,
+        user: userId,
+      });
+
+      res.status(201).send("Song has been created");
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Internal Server Error");
+    }
   },
   update_song_tiltle_and_author: async (req, res) => {
     const { songId } = req.params;
