@@ -41,6 +41,20 @@ const songController = {
     });
     res.status(201).send(`Song has been created`);
   },
+  uploadSongYtb: async (req, res) => {
+    const { userId } = req.params;
+    await songModel.create({
+      title: req.body.title,
+      author: req.body.author,
+      view: 0,
+      image: req.body.cover,
+      song: req.body.src,
+      isPublic: req.body.isPublic,
+      like: false,
+      user: userId,
+    });
+    res.status(201).send(`Song has been created`);
+  },
   update_song_tiltle_and_author: async (req, res) => {
     const { songId } = req.params;
     const getSong = await songModel.findById(songId);
