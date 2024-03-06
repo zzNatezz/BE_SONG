@@ -28,7 +28,7 @@ sv.use("v1/likelist", likeRoute)
 mongoose
   .connect(process.env.MONGODB)
   .then(() =>
-    sv.listen(process.env.PORT, () =>
+    sv.listen(process.env.PORT || 3001, () =>
       console.log(
         `server port http://localhost:${process.env.PORT} is running !!!`
       )
