@@ -23,12 +23,16 @@ sv.use(morgan("combined"));
 sv.use("/v1/songs", songRoute);
 sv.use("/v1/auth", authRoute);
 sv.use("/v1/user", userRoute);
-sv.use("v1/likelist", likeRoute)
+sv.use("v1/likelist", likeRoute);
 
 mongoose
   .connect(process.env.MONGODB)
   .then(() =>
+
+   
+
     sv.listen(process.env.PORT || 3001, () =>
+
       console.log(
         `server port http://localhost:${process.env.PORT} is running !!!`
       )
