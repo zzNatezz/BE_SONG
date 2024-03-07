@@ -188,7 +188,7 @@ const songController = {
       }
       let info = await ytdl.getInfo(videoUrl);
       let format = ytdl.filterFormats(info.formats, "audioonly");
-      format = ytdl.chooseFormat(info.formats, { quality: "140" });
+      format = ytdl.chooseFormat(info.formats, { quality: "18" });
       res.json({
         title: info.videoDetails.title,
         author: info.videoDetails.author.name,
