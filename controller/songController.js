@@ -53,7 +53,8 @@ const songController = {
         song: { url: req.body.url.url, publicId: "" },
         isPublic: req.body.isPublic,
         like: false,
-        linkYtb: true,
+        ytb: true,
+        linkytb: req.query.url,
         user: userId,
       });
       const song = await newSong.save();
@@ -205,11 +206,12 @@ const songController = {
       res.status(500).json({ error: "Internal Server Error" });
     }
   },
-  updateUrlYtb: async (songId) => {
+  updateUrlYtb: async (req, res) => {
+    const { songId } = req.params;
     try {
       const song = await songModel.findById(songId);
-      if (song.linkYtb) {
-        const videoUrl = song.song.url;
+      if (song.ytb) {
+        const videoUrl = song.linkYtb;
         let info = await ytdl.getInfo(videoUrl);
         let format = ytdl.filterFormats(info.formats, "audioonly");
         format = ytdl.chooseFormat(info.formats, { quality: "18" });
@@ -234,10 +236,10 @@ const songController = {
   },
 };
 
-cron.schedule("0 10 * * *", async () => {
+cron.schedule("0 12 * * *", async () => {
   const allSongs = await songModel.find({});
   allSongs.forEach((song) => {
-    updateUrlYtb(song._id);
+    songController.updateUrlYtb();
   });
 });
 
