@@ -3,6 +3,7 @@ import { User } from "../modell/userModel.js";
 import shuffleIndex from "../utils/shuffleIndex.js";
 import { cloudinary } from "../utils/uploader.js";
 import ytdl from "ytdl-core";
+import cron from "node-cron";
 
 const songController = {
   getAllSong: async (req, res) => {
@@ -52,6 +53,7 @@ const songController = {
         song: { url: req.body.url.url, publicId: "" },
         isPublic: req.body.isPublic,
         like: false,
+        linkYtb: true,
         user: userId,
       });
       const song = await newSong.save();
@@ -179,7 +181,6 @@ const songController = {
     const shuffle_recom_song = shuffleIndex(recomm_song);
     res.status(200).send(shuffle_recom_song.splice(0, 6));
   },
-
   urlYtb: async (req, res) => {
     try {
       const videoUrl = req.query.url;
@@ -204,6 +205,40 @@ const songController = {
       res.status(500).json({ error: "Internal Server Error" });
     }
   },
+  updateUrlYtb: async (songId) => {
+    try {
+      const song = await songModel.findById(songId);
+      if (song.linkYtb) {
+        const videoUrl = song.song.url;
+        let info = await ytdl.getInfo(videoUrl);
+        let format = ytdl.filterFormats(info.formats, "audioonly");
+        format = ytdl.chooseFormat(info.formats, { quality: "18" });
+        song.title = info.videoDetails.title;
+        song.author = info.videoDetails.author.name;
+        song.cover =
+          info.videoDetails.thumbnails[
+            info.videoDetails.thumbnails.length - 1
+          ].url;
+        song.quality = format.qualityLabel;
+        song.mimeType = format.mimeType;
+        song.song.url = format.url;
+
+        await song.save();
+        console.log(`Updated YouTube URL for song with ID ${songId}`);
+      }
+    } catch (error) {
+      console.error(
+        `Error updating YouTube URL for song with ID ${songId}: ${error}`
+      );
+    }
+  },
 };
+
+cron.schedule("0 10 * * *", async () => {
+  const allSongs = await songModel.find({});
+  allSongs.forEach((song) => {
+    updateUrlYtb(song._id);
+  });
+});
 
 export { songController };
