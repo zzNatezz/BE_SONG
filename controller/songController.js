@@ -54,7 +54,7 @@ const songController = {
         isPublic: req.body.isPublic,
         like: false,
         ytb: true,
-        linkytb: req.query.url,
+        linkytb: req.body.linkytb,
         user: userId,
       });
       const song = await newSong.save();
@@ -200,6 +200,7 @@ const songController = {
         quality: format.qualityLabel,
         mimeType: format.mimeType,
         url: format.url,
+        link: videoUrl,
       });
     } catch (error) {
       console.error(error);
