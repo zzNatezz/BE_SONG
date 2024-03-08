@@ -18,7 +18,8 @@ const songSchema = new Schema({
   },
   updatedAt: Date,
   like: Boolean,
-  linkYtb: { type: Boolean, default: false },
+  ytb: { type: Boolean, default: false },
+  linkYtb: String,
   user: { type: String, require: true },
 });
 
