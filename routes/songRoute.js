@@ -11,6 +11,8 @@ import {
 
 const songRoute = Router();
 
+songRoute.put("/update-ytb/:songId", asyncCatch(songController.updateUrlYtb));
+
 songRoute.post(
   "/:userId",
   uploader.array("files"),
