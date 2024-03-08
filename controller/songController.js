@@ -115,7 +115,7 @@ const songController = {
     const { songId } = req.params;
     const findSong = await songModel.findById(songId);
     if (!findSong) throw new Error("Unavailable song");
-    const listPublicId = [findSong.image[0].url, findSong.song[0].url];
+    const listPublicId = [findSong.image.url, findSong.song.url];
     for (const id in listPublicId) {
       await cloudinary.uploader.destroy(id);
     }
