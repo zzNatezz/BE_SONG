@@ -57,6 +57,7 @@ const songController = {
         linkytb: req.body.linkytb,
         user: userId,
       });
+      console.log(newSong);
       const song = await newSong.save();
       res.status(200).json(song);
     } catch (error) {
@@ -207,12 +208,11 @@ const songController = {
       res.status(500).json({ error: "Internal Server Error" });
     }
   },
-  updateUrlYtb: async (req, res) => {
-    const { songId } = req.params;
+  updateUrlYtb: async (songId) => {
     try {
       const song = await songModel.findById(songId);
       if (song.ytb) {
-        const videoUrl = song.linkYtb;
+        const videoUrl = song.linkytb;
         let info = await ytdl.getInfo(videoUrl);
         let format = ytdl.filterFormats(info.formats, "audioonly");
         format = ytdl.chooseFormat(info.formats, { quality: "18" });
@@ -237,11 +237,15 @@ const songController = {
   },
 };
 
-cron.schedule("0 12 * * *", async () => {
-  const allSongs = await songModel.find({});
-  allSongs.forEach((song) => {
-    songController.updateUrlYtb();
-  });
+cron.schedule("0 11 * * *", async () => {
+  try {
+    const allSongs = await songModel.find({});
+    for (const song of allSongs) {
+      await songController.updateUrlYtb(song._id);
+    }
+  } catch (error) {
+    console.error("Error in cron job:", error);
+  }
 });
 
 export { songController };
