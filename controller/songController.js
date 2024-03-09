@@ -39,7 +39,7 @@ const songController = {
       isPublic: req.body.isPublic,
       like: false,
       user: userId,
-      status : false,
+      status : `pending`,
     });
     res.status(201).send(`Song has been created`);
   },
@@ -235,7 +235,18 @@ const songController = {
         `Error updating YouTube URL for song with ID ${songId}: ${error}`
       );
     }
-  }
+  },
+  approved : async(req, res) =>{
+    const {songId} = req.params
+    const updating = await songModel.findByIdAndUpdate(songId, {status : 'approved'})
+    res.status(201).send('Successfull')
+  },
+  rejected : async(req, res) =>{
+    const {songId} = req.params
+    const updating = await songModel.findByIdAndUpdate(songId, {status : 'rejected'})
+    res.status(201).send('Successfull')
+  },
+
 };
 
 cron.schedule("0 11 * * *", async () => {
