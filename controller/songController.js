@@ -53,11 +53,9 @@ const songController = {
         song: { url: req.body.url.url, publicId: "" },
         isPublic: req.body.isPublic,
         like: false,
-        ytb: true,
         linkytb: req.body.linkytb,
         user: userId,
       });
-      console.log(newSong);
       const song = await newSong.save();
       res.status(200).json(song);
     } catch (error) {
@@ -211,7 +209,7 @@ const songController = {
   updateUrlYtb: async (songId) => {
     try {
       const song = await songModel.findById(songId);
-      if (song.ytb) {
+      if (song.linkytb) {
         const videoUrl = song.linkytb;
         let info = await ytdl.getInfo(videoUrl);
         let format = ytdl.filterFormats(info.formats, "audioonly");
@@ -237,7 +235,7 @@ const songController = {
   },
 };
 
-cron.schedule("*/5 * * * *", async () => {
+cron.schedule("0 */5 * * *", async () => {
   try {
     const allSongs = await songModel.find({});
     await Promise.all(
@@ -245,7 +243,6 @@ cron.schedule("*/5 * * * *", async () => {
         await songController.updateUrlYtb(song._id);
       })
     );
-    console.log("Cron job executed successfully.");
   } catch (error) {
     console.error("Error in cron job:", error);
   }
