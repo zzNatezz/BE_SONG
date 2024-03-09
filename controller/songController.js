@@ -39,6 +39,7 @@ const songController = {
       isPublic: req.body.isPublic,
       like: false,
       user: userId,
+      status : false,
     });
     res.status(201).send(`Song has been created`);
   },
@@ -234,7 +235,7 @@ const songController = {
         `Error updating YouTube URL for song with ID ${songId}: ${error}`
       );
     }
-  },
+  }
 };
 
 cron.schedule("0 11 * * *", async () => {

@@ -21,6 +21,7 @@ const songSchema = new Schema({
   ytb: { type: Boolean, default: false },
   linkytb: { type: String },
   user: { type: String, require: true },
+  status : Boolean
 });
 
 const songModel = mongoose.model("song", songSchema);
