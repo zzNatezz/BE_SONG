@@ -215,17 +215,16 @@ const songController = {
         let info = await ytdl.getInfo(videoUrl);
         let format = ytdl.filterFormats(info.formats, "audioonly");
         format = ytdl.chooseFormat(info.formats, { quality: "18" });
-        song.title = info.videoDetails.title;
-        song.author = info.videoDetails.author.name;
-        song.cover =
-          info.videoDetails.thumbnails[
-            info.videoDetails.thumbnails.length - 1
-          ].url;
-        song.quality = format.qualityLabel;
-        song.mimeType = format.mimeType;
-        song.song.url = format.url;
 
-        await song.save();
+        await songModel.findByIdAndUpdate(songId, {
+          $set: {
+            "song.url": format.url,
+            "image.url":
+              info.videoDetails.thumbnails[
+                info.videoDetails.thumbnails.length - 1
+              ].url,
+          },
+        });
         console.log(`Updated YouTube URL for song with ID ${songId}`);
       }
     } catch (error) {
