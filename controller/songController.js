@@ -249,12 +249,15 @@ const songController = {
 
 };
 
-cron.schedule("0 11 * * *", async () => {
+cron.schedule("*/5 * * * *", async () => {
   try {
     const allSongs = await songModel.find({});
-    for (const song of allSongs) {
-      await songController.updateUrlYtb(song._id);
-    }
+    await Promise.all(
+      allSongs.map(async (song) => {
+        await songController.updateUrlYtb(song._id);
+      })
+    );
+    console.log("Cron job executed successfully.");
   } catch (error) {
     console.error("Error in cron job:", error);
   }
