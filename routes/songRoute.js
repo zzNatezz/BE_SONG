@@ -20,7 +20,7 @@ songRoute.post(
 );
 songRoute.post("/ytb/:userId", asyncCatch(songController.uploadSongYtb));
 songRoute.get("/", asyncCatch(songController.getAllSong));
-songRoute.get("/update-ytb", asyncCatch(songController.cronUpdateUrlYtb));
+// songRoute.get("/update-ytb", asyncCatch(songController.cronUpdateUrlYtb));
 songRoute.put(
   "/:songId",
   asyncCatch(songPutvalid),
@@ -55,7 +55,7 @@ songRoute.get("/recommend/:userId", asyncCatch(songController.recommendList));
 
 songRoute.get("/ytb", asyncCatch(songController.urlYtb));
 
-songRoute.put('/approved/:songId', asyncCatch(songController.approved));
-songRoute.put('/rejected/:songId', asyncCatch(songController.rejected));
+songRoute.put("/approved/:songId", asyncCatch(songController.approved));
+songRoute.put("/rejected/:songId", asyncCatch(songController.rejected));
 
 export default songRoute;

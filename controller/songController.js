@@ -234,33 +234,20 @@ const songController = {
     }
   },
 
-  cronUpdateUrlYtb: async (req, res) => {
-    try {
-      const allSongs = await songModel.find({});
-      await Promise.all(
-        allSongs.map(async (song) => {
-          await updateUrlYtb(song._id);
-        })
-      );
-      res.status(200).send("Cron job completed.");
-    } catch (error) {
-      console.error("Error in cron job:", error);
-      res.status(500).send("Internal Server Error");
-    }
-  },
+  // cronUpdateUrlYtb: async (req, res) => {
+  //   try {
+  //     const allSongs = await songModel.find({});
+  //     await Promise.all(
+  //       allSongs.map(async (song) => {
+  //         await updateUrlYtb(song._id);
+  //       })
+  //     );
+  //     res.status(200).send("Cron job completed.");
+  //   } catch (error) {
+  //     console.error("Error in cron job:", error);
+  //     res.status(500).send("Internal Server Error");
+  //   }
+  // },
 };
-
-cron.schedule("0 */3 * * *", async () => {
-  try {
-    const allSongs = await songModel.find({});
-    await Promise.all(
-      allSongs.map(async (song) => {
-        await songController.updateUrlYtb(song._id);
-      })
-    );
-  } catch (error) {
-    console.error("Error in cron job:", error);
-  }
-});
 
 export { songController };
