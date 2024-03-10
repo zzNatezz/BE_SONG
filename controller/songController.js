@@ -39,7 +39,7 @@ const songController = {
       isPublic: req.body.isPublic,
       like: false,
       user: userId,
-      status : `pending`,
+      status: `pending`,
     });
     res.status(201).send(`Song has been created`);
   },
@@ -235,7 +235,6 @@ const songController = {
   },
 
   cronUpdateUrlYtb: async (req, res) => {
-
     try {
       const allSongs = await songModel.find({});
       await Promise.all(
@@ -248,7 +247,7 @@ const songController = {
       console.error("Error in cron job:", error);
       res.status(500).send("Internal Server Error");
     }
-
+  },
 };
 
 cron.schedule("0 */3 * * *", async () => {
