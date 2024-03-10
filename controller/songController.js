@@ -206,7 +206,7 @@ const songController = {
       res.status(500).json({ error: "Internal Server Error" });
     }
   },
-  updateUrlYtb: async (songId) => {
+  newUrlYtb: async (songId) => {
     try {
       const song = await songModel.findById(songId);
       if (song.linkytb) {
@@ -232,12 +232,12 @@ const songController = {
     }
   },
 
-  cronUpdateUrlYtb: async (req, res) => {
+  updateUrlYtb: async (req, res) => {
     try {
       const allSongs = await songModel.find({});
       await Promise.all(
         allSongs.map(async (song) => {
-          await songController.updateUrlYtb(song._id);
+          await songController.newUrlYtb(song._id);
         })
       );
       res.status(200).send("update success url");
