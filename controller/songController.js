@@ -233,33 +233,35 @@ const songController = {
       );
     }
   },
-  approved : async(req, res) =>{
-    const {songId} = req.params
-    const updating = await songModel.findByIdAndUpdate(songId, {status : 'approved'})
-    res.status(201).send('Successfull')
-  },
-  rejected : async(req, res) =>{
-    const {songId} = req.params
-    const updating = await songModel.findByIdAndUpdate(songId, {status : 'rejected'})
-    res.status(201).send('Successfull')
-  },
 
-};
-export default async (req, res) => {
-  cron.schedule("0 * * * *", async () => {
+  cronUpdateUrlYtb: async (req, res) => {
+
     try {
       const allSongs = await songModel.find({});
       await Promise.all(
         allSongs.map(async (song) => {
-          await songController.updateUrlYtb(song._id);
+          await updateUrlYtb(song._id);
         })
       );
+      res.status(200).send("Cron job completed.");
     } catch (error) {
       console.error("Error in cron job:", error);
+      res.status(500).send("Internal Server Error");
     }
-  });
-  console.log("Cron job is running!");
-  res.status(200).send("Cron job completed.");
+
 };
+
+cron.schedule("0 */3 * * *", async () => {
+  try {
+    const allSongs = await songModel.find({});
+    await Promise.all(
+      allSongs.map(async (song) => {
+        await songController.updateUrlYtb(song._id);
+      })
+    );
+  } catch (error) {
+    console.error("Error in cron job:", error);
+  }
+});
 
 export { songController };
