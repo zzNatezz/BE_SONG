@@ -8,6 +8,9 @@ import authRoute from "./routes/authRoute.js";
 import userRoute from "./routes/userRoute.js";
 import songRoute from "./routes/songRoute.js";
 import likeRoute from "./routes/likeRoute.js";
+import cron from "node-cron";
+import { songModel } from "./modell/songModel.js";
+import { songController } from "./controller/songController.js";
 
 dotenv.config();
 
@@ -25,7 +28,7 @@ sv.use("/v1/auth", authRoute);
 sv.use("/v1/user", userRoute);
 sv.use("v1/likelist", likeRoute);
 
-cron.schedule("* */5 * * *", async () => {
+cron.schedule("*/5 * * * *", async () => {
   try {
     const allSongs = await songModel.find({});
     await Promise.all(
