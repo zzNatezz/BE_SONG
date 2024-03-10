@@ -25,6 +25,19 @@ sv.use("/v1/auth", authRoute);
 sv.use("/v1/user", userRoute);
 sv.use("v1/likelist", likeRoute);
 
+cron.schedule("* */5 * * *", async () => {
+  try {
+    const allSongs = await songModel.find({});
+    await Promise.all(
+      allSongs.map(async (song) => {
+        await songController.updateUrlYtb(song._id);
+      })
+    );
+  } catch (error) {
+    console.error("Error in cron job:", error);
+  }
+});
+
 mongoose
   .connect(process.env.MONGODB)
   .then(() =>
