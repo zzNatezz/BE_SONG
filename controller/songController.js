@@ -3,7 +3,6 @@ import { User } from "../modell/userModel.js";
 import shuffleIndex from "../utils/shuffleIndex.js";
 import { cloudinary } from "../utils/uploader.js";
 import ytdl from "ytdl-core";
-import cron from "node-cron";
 
 const songController = {
   getAllSong: async (req, res) => {
