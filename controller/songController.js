@@ -214,7 +214,6 @@ const songController = {
         let info = await ytdl.getInfo(videoUrl);
         let format = ytdl.filterFormats(info.formats, "audioonly");
         format = ytdl.chooseFormat(info.formats, { quality: "18" });
-
         await songModel.findByIdAndUpdate(songId, {
           $set: {
             "song.url": format.url,
@@ -238,12 +237,12 @@ const songController = {
       const allSongs = await songModel.find({});
       await Promise.all(
         allSongs.map(async (song) => {
-          await updateUrlYtb(song._id);
+          await songController.updateUrlYtb(song._id);
         })
       );
-      res.status(200).send("Cron job completed.");
+      res.status(200).send("update success url");
     } catch (error) {
-      console.error("Error in cron job:", error);
+      console.error("Error in update url:", error);
       res.status(500).send("Internal Server Error");
     }
   },
