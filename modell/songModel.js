@@ -20,6 +20,7 @@ const songSchema = new Schema({
   like: Boolean,
   linkytb: { type: String },
   user: { type: String, require: true },
+  status : String
 });
 
 const songModel = mongoose.model("song", songSchema);

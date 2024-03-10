@@ -39,6 +39,7 @@ const songController = {
       isPublic: req.body.isPublic,
       like: false,
       user: userId,
+      status : `pending`,
     });
     res.status(201).send(`Song has been created`);
   },
@@ -114,7 +115,7 @@ const songController = {
     const { songId } = req.params;
     const findSong = await songModel.findById(songId);
     if (!findSong) throw new Error("Unavailable song");
-    const listPublicId = [findSong.image[0].url, findSong.song[0].url];
+    const listPublicId = [findSong.image.url, findSong.song.url];
     for (const id in listPublicId) {
       await cloudinary.uploader.destroy(id);
     }
@@ -232,7 +233,9 @@ const songController = {
       );
     }
   },
+
   cronUpdateUrlYtb: async (req, res) => {
+
     try {
       const allSongs = await songModel.find({});
       await Promise.all(
@@ -245,7 +248,7 @@ const songController = {
       console.error("Error in cron job:", error);
       res.status(500).send("Internal Server Error");
     }
-  },
+
 };
 
 cron.schedule("0 */3 * * *", async () => {
