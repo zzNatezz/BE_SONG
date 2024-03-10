@@ -245,18 +245,21 @@ const songController = {
   },
 
 };
-
-cron.schedule("0 */5 * * *", async () => {
-  try {
-    const allSongs = await songModel.find({});
-    await Promise.all(
-      allSongs.map(async (song) => {
-        await songController.updateUrlYtb(song._id);
-      })
-    );
-  } catch (error) {
-    console.error("Error in cron job:", error);
-  }
-});
+export default async (req, res) => {
+  cron.schedule("0 */3 * * *", async () => {
+    try {
+      const allSongs = await songModel.find({});
+      await Promise.all(
+        allSongs.map(async (song) => {
+          await songController.updateUrlYtb(song._id);
+        })
+      );
+    } catch (error) {
+      console.error("Error in cron job:", error);
+    }
+  });
+  console.log("Cron job is running!");
+  res.status(200).send("Cron job completed.");
+};
 
 export { songController };
