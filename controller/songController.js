@@ -246,6 +246,11 @@ const songController = {
       res.status(500).send("Internal Server Error");
     }
   },
+
+  getPendingSong : async (req, res) => {
+     const findPendSong = await songModel.find({status : 'pending'})
+     res.status(200).send(findPendSong)
+  }
 };
 
 export { songController };

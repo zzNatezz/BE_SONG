@@ -57,4 +57,6 @@ songRoute.get("/ytb", asyncCatch(songController.urlYtb));
 songRoute.put("/approved/:songId", asyncCatch(songController.approved));
 songRoute.put("/rejected/:songId", asyncCatch(songController.rejected));
 
+songRoute.get('/pending', asyncCatch(songController.getPendingSong))
+
 export default songRoute;
