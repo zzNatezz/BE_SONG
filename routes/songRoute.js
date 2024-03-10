@@ -20,6 +20,7 @@ songRoute.post(
 );
 songRoute.post("/ytb/:userId", asyncCatch(songController.uploadSongYtb));
 songRoute.get("/", asyncCatch(songController.getAllSong));
+songRoute.get("/update-ytb", asyncCatch(songController.cronUpdateUrlYtb));
 songRoute.put(
   "/:songId",
   asyncCatch(songPutvalid),
