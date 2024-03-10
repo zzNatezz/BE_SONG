@@ -234,7 +234,7 @@ const songController = {
   },
 };
 export default async (req, res) => {
-  cron.schedule("0 */3 * * *", async () => {
+  cron.schedule("0 * * * *", async () => {
     try {
       const allSongs = await songModel.find({});
       await Promise.all(
