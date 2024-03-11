@@ -59,6 +59,6 @@ songRoute.put("/rejected/:songId", asyncCatch(songController.rejectedSong));
 
 songRoute.get('/pending', asyncCatch(songController.getPendingSong));
 
-songRoute.put(`/updateStatus`, songController.fileterSong)
+// songRoute.put(`/updateStatus`, songController.fileterSong)
 
 export default songRoute;
