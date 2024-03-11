@@ -250,7 +250,20 @@ const songController = {
   getPendingSong : async (req, res) => {
      const findPendSong = await songModel.find({status : 'pending'})
      res.status(200).send(findPendSong)
+  },
+
+  approvedSong : async (req, res) =>{
+    const {songId} = req.params;
+    await songModel.findByIdAndUpdate(songId, {status : 'approved'});
+    res.status(201).send(`successfull`)
+  },
+
+  rejectedSong : async (req, res) =>{
+    const {songId} = req.params;
+    await songModel.findByIdAndUpdate(songId, {status : 'rejected'});
+    res.status(201).send(`successfull`)
   }
+
 };
 
 export { songController };
