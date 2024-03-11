@@ -72,7 +72,6 @@ const songController = {
   },
   update_song_img: async (req, res) => {
     const file = req.file;
-    console.log(file);
     const typeFile = file.mimetype.split("/")[0];
     if (typeFile !== "image") throw new Error("only image is accept");
     const { songId } = req.params;
@@ -264,17 +263,6 @@ const songController = {
     await songModel.findByIdAndUpdate(songId, {status : 'rejected'});
     res.status(201).send(`successfull`)
   },
-
-  // Cái này lưu lại để dùng từ từ :D nào xong xóa
-  // fileterSong : async (req,res) => {
-  //   const findSongs = await songModel.find();
-  //   const filerSong = findSongs.filter(item => item.status === undefined );
-  //   for(let i = 0; i < filerSong.length; i++){
-  //     Object.assign(filerSong[i],{status : 'approved'});
-  //     filerSong[i].save()
-  //   }
-  //   res.send(`ok`)
-  // }
 
 };
 
