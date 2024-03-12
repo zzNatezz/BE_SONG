@@ -55,7 +55,7 @@ const songController = {
         like: false,
         linkytb: req.body.linkytb,
         user: userId,
-        status: `pending`,
+        status: req.body.status,
       });
       const song = await newSong.save();
       res.status(200).json(song);
