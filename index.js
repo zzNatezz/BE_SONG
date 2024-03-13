@@ -8,15 +8,25 @@ import authRoute from "./routes/authRoute.js";
 import userRoute from "./routes/userRoute.js";
 import songRoute from "./routes/songRoute.js";
 import likeRoute from "./routes/likeRoute.js";
-import cron from "node-cron";
-import { songModel } from "./modell/songModel.js";
-import { songController } from "./controller/songController.js";
 
 dotenv.config();
 
 const sv = express();
 
-sv.use(cors());
+const allowedOrigins = ["https://stave.icu", "http://localhost:3000"];
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (allowedOrigins.includes(origin) || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
+};
+
+sv.use(cors(corsOptions));
 
 sv.use(cookieParser());
 
