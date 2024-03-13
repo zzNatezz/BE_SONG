@@ -13,20 +13,7 @@ dotenv.config();
 
 const sv = express();
 
-const allowedOrigins = ["https://stave.icu", "http://localhost:3000"];
-
-const corsOptions = {
-  origin: function (origin, callback) {
-    if (allowedOrigins.includes(origin) || !origin) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-  credentials: true,
-};
-
-sv.use(cors(corsOptions));
+sv.use(cors());
 
 sv.use(cookieParser());
 
