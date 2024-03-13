@@ -8,9 +8,6 @@ import authRoute from "./routes/authRoute.js";
 import userRoute from "./routes/userRoute.js";
 import songRoute from "./routes/songRoute.js";
 import likeRoute from "./routes/likeRoute.js";
-import cron from "node-cron";
-import { songModel } from "./modell/songModel.js";
-import { songController } from "./controller/songController.js";
 
 dotenv.config();
 

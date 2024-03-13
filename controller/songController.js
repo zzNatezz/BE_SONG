@@ -55,7 +55,7 @@ const songController = {
         like: false,
         linkytb: req.body.linkytb,
         user: userId,
-        status: `pending`,
+        status: "pending",
       });
       const song = await newSong.save();
       res.status(200).json(song);
@@ -247,22 +247,34 @@ const songController = {
     }
   },
 
-  getPendingSong : async (req, res) => {
-     const findPendSong = await songModel.find({status : 'pending'})
-     res.status(200).send(findPendSong)
+  getPendingSong: async (req, res) => {
+    const findPendSong = await songModel.find({ status: "pending" });
+    res.status(200).send(findPendSong);
   },
 
-  approvedSong : async (req, res) =>{
-    const {songId} = req.params;
-    await songModel.findByIdAndUpdate(songId, {status : 'approved'});
-    res.status(201).send(`successfull`)
+  approvedSong: async (req, res) => {
+    const { songId } = req.params;
+    await songModel.findByIdAndUpdate(songId, { status: "approved" });
+    res.status(201).send(`successfull`);
   },
 
-  rejectedSong : async (req, res) =>{
-    const {songId} = req.params;
-    await songModel.findByIdAndUpdate(songId, {status : 'rejected'});
-    res.status(201).send(`successfull`)
+  rejectedSong: async (req, res) => {
+    const { songId } = req.params;
+    await songModel.findByIdAndUpdate(songId, { status: "rejected" });
+    res.status(201).send(`successfull`);
   },
+
+
+  // Cái này lưu lại để dùng từ từ :D nào xong xóa
+  // fileterSong : async (req,res) => {
+  //   const findSongs = await songModel.find();
+  //   const filerSong = findSongs.filter(item => item.status === undefined );
+  //   for(let i = 0; i < filerSong.length; i++){
+  //     Object.assign(filerSong[i],{status : 'approved'});
+  //     filerSong[i].save()
+  //   }
+  //   res.send(`ok`)
+  // }
 
 };
 

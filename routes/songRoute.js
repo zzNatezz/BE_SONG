@@ -10,7 +10,7 @@ import {
 } from "../validate/song.validate.js";
 
 const songRoute = Router();
-
+songRoute.post("/ytb/:userId", asyncCatch(songController.uploadSongYtb));
 songRoute.post(
   "/:userId",
   uploader.array("files"),
@@ -57,6 +57,6 @@ songRoute.get("/ytb", asyncCatch(songController.urlYtb));
 songRoute.put("/approved/:songId", asyncCatch(songController.approvedSong));
 songRoute.put("/rejected/:songId", asyncCatch(songController.rejectedSong));
 
-songRoute.get('/pending', asyncCatch(songController.getPendingSong));
+songRoute.get("/pending", asyncCatch(songController.getPendingSong));
 
 export default songRoute;
