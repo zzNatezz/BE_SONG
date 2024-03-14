@@ -2,6 +2,11 @@ import { songModel } from "../modell/songModel.js";
 import { User } from "../modell/userModel.js";
 
 const likeController = {
+  listLike: async (req, res) => {
+    const { userId } = req.params;
+    const listLike = await User.findById(userId).populate("like");
+    res.status(200).send(listLike);
+  },
   liked: async (req, res) => {
     const { userId, songId } = req.params;
     try {
