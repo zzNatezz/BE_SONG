@@ -18,7 +18,7 @@ const likeController = {
       if (user.likes.includes(songId)) {
         return;
       }
-      await User.findByIdAndUpdate(userId, {
+      await songModel.findByIdAndUpdate(songId, {
         $set: {
           like: true,
         },
@@ -36,7 +36,7 @@ const likeController = {
       if (!user) {
         return;
       }
-      await User.findByIdAndUpdate(userId, {
+      await songModel.findByIdAndUpdate(songId, {
         $set: {
           like: false,
         },
