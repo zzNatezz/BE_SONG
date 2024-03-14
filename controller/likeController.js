@@ -4,7 +4,7 @@ import { User } from "../modell/userModel.js";
 const likeController = {
   listLike: async (req, res) => {
     const { userId } = req.params;
-    const listLike = await User.findById(userId).populate("like");
+    const listLike = await User.findById(userId).populate("likes");
     res.status(200).send(listLike);
   },
   liked: async (req, res) => {
