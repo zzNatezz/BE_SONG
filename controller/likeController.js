@@ -1,13 +1,26 @@
-import { likeModel } from "../modell/likeModel.js";
-import { songModel } from "../modell/songModel.js";
-import { User } from "../modell/userModel.js";
+import { songModel } from "../modell/songModel";
+import { User } from "../modell/userModel";
 
 const likeController = {
-    updateLikeList : async (req, res) =>{
-        const {userId, songId} = req.params;
-        const isUser = await likeModel.findOne({user : userId})
-        res.send('testing')
-    }
-}
+  liked: async (req, res) => {
+    const { userId, songId } = req.params;
+    try {
+      const user = await User.findById(userId);
+      const song = await songModel.findById(songId);
+      if (!user || !song) {
+        return;
+      }
+      if (user.likes.includes(songId)) {
+        user.likes = user.likes.filter((id) => id.toString() !== songId);
+        await user.save();
+      }
 
-export default likeController
+      user.likes.push(songId);
+      await user.save();
+    } catch (error) {
+      console.log(error);
+    }
+  },
+};
+
+export default likeController;

@@ -23,7 +23,7 @@ sv.use(morgan("combined"));
 sv.use("/v1/songs", songRoute);
 sv.use("/v1/auth", authRoute);
 sv.use("/v1/user", userRoute);
-sv.use("v1/likelist", likeRoute);
+sv.use("/v1/like", likeRoute);
 
 mongoose
   .connect(process.env.MONGODB)
