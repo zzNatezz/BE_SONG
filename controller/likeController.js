@@ -19,9 +19,7 @@ const likeController = {
         return;
       }
       await songModel.findByIdAndUpdate(songId, {
-        $set: {
-          like: true,
-        },
+        like: true,
       });
       user.likes.push(songId);
       await user.save();
@@ -37,9 +35,7 @@ const likeController = {
         return;
       }
       await songModel.findByIdAndUpdate(songId, {
-        $set: {
-          like: false,
-        },
+        like: false,
       });
       user.likes = user.likes.filter((id) => id.toString() !== songId);
       await user.save();
