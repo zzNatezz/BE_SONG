@@ -18,7 +18,11 @@ const likeController = {
       if (user.likes.includes(songId)) {
         return;
       }
-      song.like = true;
+      await User.findByIdAndUpdate(userId, {
+        $set: {
+          like: true,
+        },
+      });
       user.likes.push(songId);
       await user.save();
     } catch (error) {
@@ -32,7 +36,11 @@ const likeController = {
       if (!user) {
         return;
       }
-      song.like = false;
+      await User.findByIdAndUpdate(userId, {
+        $set: {
+          like: false,
+        },
+      });
       user.likes = user.likes.filter((id) => id.toString() !== songId);
       await user.save();
     } catch (error) {
