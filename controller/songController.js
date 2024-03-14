@@ -179,7 +179,7 @@ const songController = {
     }
 
     const shuffle_recom_song = shuffleIndex(recomm_song);
-    res.status(200).send(shuffle_recom_song.splice(0, 6));
+    res.status(200).send(shuffle_recom_song.splice(0, 10));
   },
   urlYtb: async (req, res) => {
     try {
@@ -264,7 +264,6 @@ const songController = {
     res.status(201).send(`successfull`);
   },
 
-
   // Cái này lưu lại để dùng từ từ :D nào xong xóa
   // fileterSong : async (req,res) => {
   //   const findSongs = await songModel.find();
@@ -275,7 +274,6 @@ const songController = {
   //   }
   //   res.send(`ok`)
   // }
-
 };
 
 export { songController };
