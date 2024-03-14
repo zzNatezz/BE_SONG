@@ -1,5 +1,5 @@
-import { songModel } from "../modell/songModel";
-import { User } from "../modell/userModel";
+import { songModel } from "../modell/songModel.js";
+import { User } from "../modell/userModel.js";
 
 const likeController = {
   liked: async (req, res) => {
