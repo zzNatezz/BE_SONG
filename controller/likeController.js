@@ -11,10 +11,11 @@ const likeController = {
         return;
       }
       if (user.likes.includes(songId)) {
+        song.like = false;
         user.likes = user.likes.filter((id) => id.toString() !== songId);
         await user.save();
       }
-
+      song.like = true;
       user.likes.push(songId);
       await user.save();
     } catch (error) {
