@@ -11,12 +11,24 @@ const likeController = {
         return;
       }
       if (user.likes.includes(songId)) {
-        song.like = false;
-        user.likes = user.likes.filter((id) => id.toString() !== songId);
-        await user.save();
+        return;
       }
       song.like = true;
       user.likes.push(songId);
+      await user.save();
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  unlike: async (req, res) => {
+    const { userId, songId } = req.params;
+    try {
+      const user = await User.findById(userId);
+      if (!user) {
+        return;
+      }
+      song.like = false;
+      user.likes = user.likes.filter((id) => id.toString() !== songId);
       await user.save();
     } catch (error) {
       console.log(error);

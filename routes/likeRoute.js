@@ -4,6 +4,7 @@ import { asyncCatch } from "../utils/asyncCatch.js";
 
 const likeRoute = Router();
 
-likeRoute.post("/:userId/:songId", asyncCatch(likeController.liked));
+likeRoute.put("/:userId/:songId", asyncCatch(likeController.liked));
+likeRoute.delete("/:userId/:songId", asyncCatch(likeController.unlike));
 
 export default likeRoute;
