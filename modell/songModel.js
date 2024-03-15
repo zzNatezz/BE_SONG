@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { User } from "./userModel";
 
 const { Schema } = mongoose;
 
@@ -16,6 +17,12 @@ const songSchema = new Schema({
     url: String,
     publicId: String,
   },
+  liked: [
+    {
+      user: { type: Schema.Types.ObjectId, ref: User },
+      like: { type: Boolean, default: false },
+    },
+  ],
   updatedAt: Date,
   linkytb: { type: String },
   user: { type: String, require: true },
