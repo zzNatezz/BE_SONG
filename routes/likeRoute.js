@@ -1,10 +1,10 @@
 import { Router } from "express";
-import likeController from "../controller/likeController.js";
-import { asyncCatch } from "../utils/asyncCatch.js";
+import { likeController } from "../controller/likeController.js";
 
 const likeRoute = Router();
-likeRoute.get("/:userId", asyncCatch(likeController.listLike));
-likeRoute.put("/:userId/:songId", asyncCatch(likeController.liked));
-likeRoute.delete("/:userId/:songId", asyncCatch(likeController.unlike));
+
+likeRoute.get("/:userId", likeController.listLike);
+likeRoute.put("/:userId/:songId", likeController.liked);
+likeRoute.delete("/:userId/:songId", likeController.unlike);
 
 export default likeRoute;
