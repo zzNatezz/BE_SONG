@@ -276,7 +276,7 @@ const songController = {
     if (!isExisting) {
       await songModel.findOneAndUpdate(
         { _id: songId },
-        { $set: { "liked.0.like": true } },
+        { $set: { "liked.like": true } },
         { new: true }
       );
       user.likes.unshift(songId);
@@ -305,7 +305,7 @@ const songController = {
       }
       await songModel.findOneAndUpdate(
         { _id: songId },
-        { $set: { "liked.0.like": false } },
+        { $set: { "liked.like": false } },
         { new: true }
       );
       user.likes.splice(songIndex, 1);
