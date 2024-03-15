@@ -271,20 +271,19 @@ const songController = {
   },
   liked: async (req, res) => {
     const { userId, songId } = req.params;
-    try {
-      const user = await User.findById(userId);
+    const user = await User.findById(userId);
+    const isExisting = user.likes.includes(songId);
+    if (!isExisting) {
+      user.likes.unshift(songId);
+      user.save();
+      return res.status(201).send(`ok!`);
+    } else {
       const song = await songModel.findById(songId);
-      if (!user || !song) {
-        return;
-      }
-      if (user.likes.includes(songId)) {
-        return;
-      }
-
-      user.likes.push(songId);
+      const index = user.listenAgain.indexOf(songId);
+      user.likes.splice(index, 1);
+      user.likes.unshift(song);
       await user.save();
-    } catch (error) {
-      console.log(error);
+      return res.status(201).send(`ok!`);
     }
   },
   unlike: async (req, res) => {
