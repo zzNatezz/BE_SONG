@@ -291,13 +291,20 @@ const songController = {
     try {
       const user = await User.findById(userId);
       if (!user) {
-        return;
+        return res.status(404).send("User not found");
       }
 
-      user.likes = user.likes.filter((id) => id.toString() !== songId);
+      const songIndex = user.likes.indexOf(songId);
+      if (songIndex === -1) {
+        return res.status(404).send("Song not found in user's likes");
+      }
+
+      user.likes.splice(songIndex, 1);
       await user.save();
+      return res.status(200).send("Unlike successful");
     } catch (error) {
-      console.log(error);
+      console.error("Error unliking song:", error);
+      return res.status(500).send("Internal Server Error");
     }
   },
 
