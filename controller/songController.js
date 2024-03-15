@@ -275,7 +275,7 @@ const songController = {
     const isExisting = user.likes.includes(songId);
     if (!isExisting) {
       await songModel.findByIdAndUpdate(songId, {
-        $set: { "liked.like": true },
+        $set: { "liked.0.like": true },
       });
       user.likes.unshift(songId);
       user.save();
@@ -302,7 +302,7 @@ const songController = {
         return res.status(404).send("Song not found in user's likes");
       }
       await songModel.findByIdAndUpdate(songId, {
-        $set: { "liked.like": false },
+        $set: { "liked.0.like": false },
       });
       user.likes.splice(songIndex, 1);
       await user.save();
@@ -315,14 +315,23 @@ const songController = {
 
   // Cái này lưu lại để dùng từ từ :D nào xong xóa
   // fileterSong: async (req, res) => {
-  //   const findSongs = await songModel.find();
-  //   const filerSong = findSongs.filter((item) => item.liked === undefined);
-  //   for (let i = 0; i < filerSong.length; i++) {
-  //     Object.assign(filerSong[i], { liked: [] });
-  //     filerSong[i].save();
+  //   try {
+  //     const findSongs = await songModel.find();
+  //     const filteredSongs = findSongs.filter(
+  //       (item) => item.liked === undefined
+  //     );
+
+  //     for (let i = 0; i < findSongs.length; i++) {
+  //       findSongs[i].liked = { like: false };
+  //     }
+  //     await Promise.all(findSongs.map((song) => song.save()));
+  //     res.send(`ok`);
+  //   } catch (error) {
+  //     console.error("Error updating songs:", error);
+  //     res.status(500).send("Internal Server Error");
   //   }
-  //   res.send(`ok`);
   // },
+  //router ở userRoute
 };
 
 export { songController };
