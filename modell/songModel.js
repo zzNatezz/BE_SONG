@@ -16,6 +16,13 @@ const songSchema = new Schema({
     url: String,
     publicId: String,
   },
+  liked: [
+    {
+      user: { type: Schema.Types.ObjectId, ref: "user" },
+      like: { type: Boolean, default: false },
+    },
+  ],
+
   updatedAt: Date,
   linkytb: { type: String },
   user: { type: String, require: true },
