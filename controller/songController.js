@@ -280,9 +280,7 @@ const songController = {
       if (user.likes.includes(songId)) {
         return;
       }
-      await songModel.findByIdAndUpdate(songId, {
-        like: true,
-      });
+
       user.likes.push(songId);
       await user.save();
     } catch (error) {
@@ -296,9 +294,7 @@ const songController = {
       if (!user) {
         return;
       }
-      await songModel.findByIdAndUpdate(songId, {
-        like: false,
-      });
+
       user.likes = user.likes.filter((id) => id.toString() !== songId);
       await user.save();
     } catch (error) {

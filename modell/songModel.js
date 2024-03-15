@@ -17,10 +17,9 @@ const songSchema = new Schema({
     publicId: String,
   },
   updatedAt: Date,
-  like: Boolean,
   linkytb: { type: String },
   user: { type: String, require: true },
-  status : String
+  status: String,
 });
 
 const songModel = mongoose.model("song", songSchema);
