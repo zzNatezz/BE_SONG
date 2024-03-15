@@ -22,7 +22,6 @@ const songSchema = new Schema({
       like: { type: Boolean, default: false },
     },
   ],
-
   updatedAt: Date,
   linkytb: { type: String },
   user: { type: String, require: true },
