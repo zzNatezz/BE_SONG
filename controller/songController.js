@@ -274,7 +274,9 @@ const songController = {
     const user = await User.findById(userId);
     const isExisting = user.likes.includes(songId);
     if (!isExisting) {
-      await songModel.findOneAndUpdate({ $set: { "liked.like": true } });
+      await songModel.findByIdAndUpdate(songId, {
+        $set: { "liked.like": true },
+      });
       user.likes.unshift(songId);
       user.save();
       return res.status(201).send(`ok!`);
@@ -299,7 +301,9 @@ const songController = {
       if (songIndex === -1) {
         return res.status(404).send("Song not found in user's likes");
       }
-      await songModel.findOneAndUpdate({ $set: { "liked.like": false } });
+      await songModel.findByIdAndUpdate(songId, {
+        $set: { "liked.like": false },
+      });
       user.likes.splice(songIndex, 1);
       await user.save();
       return res.status(200).send("Unlike successful");
