@@ -279,7 +279,7 @@ const songController = {
       return res.status(201).send(`ok!`);
     } else {
       const song = await songModel.findById(songId);
-      const index = user.listenAgain.indexOf(songId);
+      const index = user.likes.indexOf(songId);
       user.likes.splice(index, 1);
       user.likes.unshift(song);
       await user.save();
