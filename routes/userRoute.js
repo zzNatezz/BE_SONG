@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { userController } from "../controller/userController.js";
 import { middlewareController } from "../controller/middlewareController.js";
+import { songController } from "../controller/songController.js";
 
 const userRoute = Router();
 
