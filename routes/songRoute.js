@@ -59,8 +59,4 @@ songRoute.put("/rejected/:songId", asyncCatch(songController.rejectedSong));
 
 songRoute.get("/pending", asyncCatch(songController.getPendingSong));
 
-songRoute.get("/like/:userId", asyncCatch(songController.listLike));
-songRoute.put("/like/:userId/:songId", asyncCatch(songController.liked));
-songRoute.delete("/like/:userId/:songId", asyncCatch(songController.unlike));
-
 export default songRoute;

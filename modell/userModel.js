@@ -31,12 +31,6 @@ const userSchema = new mongoose.Schema(
         ref: songModel,
       },
     ],
-    likes: [
-      {
-        type: mongoose.Types.ObjectId,
-        ref: songModel,
-      },
-    ],
     admin: {
       type: Boolean,
       default: false,
