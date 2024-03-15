@@ -275,7 +275,7 @@ const songController = {
     const isExisting = user.likes.includes(songId);
     if (!isExisting) {
       await songModel.findOneAndUpdate(
-        { _id: userId },
+        { _id: songId },
         { $set: { "liked.0.like": true } },
         { new: true }
       );
