@@ -274,6 +274,11 @@ const songController = {
     const user = await User.findById(userId);
     const isExisting = user.likes.includes(songId);
     if (!isExisting) {
+      await songModel.findOneAndUpdate(
+        { _id: userId },
+        { $set: { "liked.0.like": true } },
+        { new: true }
+      );
       user.likes.unshift(songId);
       user.save();
       return res.status(201).send(`ok!`);
@@ -298,7 +303,11 @@ const songController = {
       if (songIndex === -1) {
         return res.status(404).send("Song not found in user's likes");
       }
-
+      await songModel.findOneAndUpdate(
+        { _id: songId },
+        { $set: { "liked.0.like": false } },
+        { new: true }
+      );
       user.likes.splice(songIndex, 1);
       await user.save();
       return res.status(200).send("Unlike successful");
@@ -309,15 +318,15 @@ const songController = {
   },
 
   // Cái này lưu lại để dùng từ từ :D nào xong xóa
-  // fileterSong : async (req,res) => {
+  // fileterSong: async (req, res) => {
   //   const findSongs = await songModel.find();
-  //   const filerSong = findSongs.filter(item => item.status === undefined );
-  //   for(let i = 0; i < filerSong.length; i++){
-  //     Object.assign(filerSong[i],{status : 'approved'});
-  //     filerSong[i].save()
+  //   const filerSong = findSongs.filter((item) => item.liked === undefined);
+  //   for (let i = 0; i < filerSong.length; i++) {
+  //     Object.assign(filerSong[i], { liked: [] });
+  //     filerSong[i].save();
   //   }
-  //   res.send(`ok`)
-  // }
+  //   res.send(`ok`);
+  // },
 };
 
 export { songController };
