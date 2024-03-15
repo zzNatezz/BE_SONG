@@ -7,7 +7,6 @@ import cookieParser from "cookie-parser";
 import authRoute from "./routes/authRoute.js";
 import userRoute from "./routes/userRoute.js";
 import songRoute from "./routes/songRoute.js";
-import likeRoute from "./routes/likeRoute.js";
 
 dotenv.config();
 
@@ -33,7 +32,6 @@ sv.use(morgan("combined"));
 sv.use("/v1/songs", songRoute);
 sv.use("/v1/auth", authRoute);
 sv.use("/v1/user", userRoute);
-sv.use("/v1/like", likeRoute);
 
 mongoose
   .connect(process.env.MONGODB)
