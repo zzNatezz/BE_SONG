@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import { songModel } from "./songModel.js";
 
 const userSchema = new mongoose.Schema(
   {

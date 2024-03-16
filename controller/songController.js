@@ -314,35 +314,21 @@ const songController = {
     try {
       const { userId, songId } = req.params;
       const playlist = await Playlist.findOne({ "like.user": userId });
-
       if (!playlist) {
         const newPlaylist = new Playlist({
           like: [{ user: userId, songs: [{ _id: songId, liked: true }] }],
         });
         await newPlaylist.save();
-        res.status(201).send("ok!");
       } else {
-        const songIndex = playlist.like[0].songs.findIndex(
-          (song) => song._id.toString() === songId
-        );
-        if (songIndex !== -1) {
-          await Playlist.findOneAndUpdate(
-            { "like.user": userId, "like.songs._id": songId },
-            {
-              $pull: { "like.$.songs": { _id: songId } },
-              $set: { [`like.0.songs.${songIndex}.liked`]: false },
-            },
-            { new: true }
-          );
-          res.status(200).send("unliked!");
-        } else {
-          await Playlist.findOneAndUpdate(
-            { "like.user": userId },
-            { $addToSet: { "like.$.songs": { _id: songId, liked: true } } },
-            { new: true }
-          );
-          res.status(201).send("ok!");
+        const songIndex = playlist.like.indexOf(songId);
+        if (songIndex === -1) {
+          return res.status(404).send("Song not found in user's likes");
         }
+        await Playlist.findByIdAndUpdate(songId, {
+          $set: { [`like.0.songs.${songIndex}.liked`]: false },
+        });
+        playlist.like.splice(songIndex, 1);
+        await playlist.save();
       }
     } catch (error) {
       console.error("Error updating liked list:", error);
