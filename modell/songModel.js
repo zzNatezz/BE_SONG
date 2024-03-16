@@ -1,5 +1,16 @@
 import mongoose from "mongoose";
 
+const isLike = new mongoose.Schema({
+  user: {
+    type: mongoose.Types.ObjectId,
+    ref: "users", // Tham chiếu tới mô hình User
+  },
+  liked: {
+    type: Boolean,
+    default: false,
+  },
+});
+
 const songSchema = new mongoose.Schema({
   title: { type: String, require: true },
   author: { type: String, require: true },
@@ -14,10 +25,7 @@ const songSchema = new mongoose.Schema({
     url: String,
     publicId: String,
   },
-  liked: {
-    type: Map,
-    of: Boolean,
-  },
+  liked: [isLike],
 
   updatedAt: Date,
   linkytb: { type: String },
