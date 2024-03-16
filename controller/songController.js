@@ -317,19 +317,30 @@ const songController = {
           like: [{ user: userId, songs: [{ _id: songId, liked: true }] }],
         });
         await newPlaylist.save();
+        res.status(201).send("ok!");
       } else {
-        await Playlist.findOneAndUpdate(
-          { "like.user": userId, "like.songs._id": songId },
-          {
-            $pull: { "like.$.songs": { _id: songId } },
-            $set: { "like.$.songs.$.liked": false },
-          },
-          { new: true }
+        const songIndex = playlist.like[0].songs.findIndex(
+          (song) => song._id.toString() === songId
         );
-        res.status(200).send("unliked!");
+        if (songIndex !== -1) {
+          await Playlist.findOneAndUpdate(
+            { "like.user": userId, "like.songs._id": songId },
+            {
+              $pull: { "like.$.songs": { _id: songId } },
+              $set: { [`like.0.songs.${songIndex}.liked`]: false },
+            },
+            { new: true }
+          );
+          res.status(200).send("unliked!");
+        } else {
+          await Playlist.findOneAndUpdate(
+            { "like.user": userId },
+            { $addToSet: { "like.$.songs": { _id: songId, liked: true } } },
+            { new: true }
+          );
+          res.status(201).send("ok!");
+        }
       }
-
-      res.status(201).send("ok!");
     } catch (error) {
       console.error("Error updating liked list:", error);
       res.status(500).send({ error: "Server error" });
