@@ -43,10 +43,10 @@ songRoute.post(
   asyncCatch(postListenedListValid),
   asyncCatch(songController.listnedList)
 );
-songRoute.get("/listened/:userId", asyncCatch(songController.getListenedList));
+songRoute.get("/listened/:userId", asyncCatch(songController.againList));
 songRoute.put(
   "/listened/:userId/:songId",
-  asyncCatch(songController.updateListenedList)
+  asyncCatch(songController.updateAgainList)
 );
 songRoute.get("/trending", asyncCatch(songController.trendingList));
 songRoute.put("/trending/:songId", asyncCatch(songController.countView));

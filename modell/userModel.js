@@ -25,18 +25,6 @@ const userSchema = new mongoose.Schema(
     avatar: {
       type: String,
     },
-    listenAgain: [
-      {
-        type: mongoose.Types.ObjectId,
-        ref: songModel,
-      },
-    ],
-    likes: [
-      {
-        type: mongoose.Types.ObjectId,
-        ref: songModel,
-      },
-    ],
     admin: {
       type: Boolean,
       default: false,
