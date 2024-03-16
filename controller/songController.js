@@ -314,7 +314,7 @@ const songController = {
 
       if (!playlist) {
         const newPlaylist = new Playlist({
-          like: [{ user: userId, songs: [songId] }],
+          like: [{ user: userId, songs: [{ _id: songId, liked: true }] }],
         });
         await newPlaylist.save();
       } else {
@@ -322,33 +322,18 @@ const songController = {
           item.user.equals(userId)
         );
         if (likeIndex !== -1) {
-          const songIndex = playlist.like[likeIndex].songs.indexOf(songId);
+          const songIndex = playlist.like[likeIndex].songs.findIndex((song) =>
+            song._id.equals(songId)
+          );
           if (songIndex !== -1) {
-            playlist.like[likeIndex].songs.splice(songIndex, 1);
-            await Playlist.findOneAndUpdate(
-              { "like.user": userId },
-              {
-                $pull: { "like.$.songs": songId },
-                $set: { "like..liked": false },
-              },
-              { new: true }
-            );
-            await playlist.save();
-            return res.status(200).send("Unlike successful");
+            playlist.like[likeIndex].songs[songIndex].liked =
+              !playlist.like[likeIndex].songs[songIndex].liked;
+          } else {
+            playlist.like[likeIndex].songs.push({ _id: songId, liked: true });
           }
+          await playlist.save();
         }
-        await Playlist.findOneAndUpdate(
-          { "like.user": userId },
-          {
-            $addToSet: { "like.$.songs": songId },
-            $set: { "like.0.liked": true },
-          },
-          { new: true }
-        );
-        playlist.like[likeIndex].songs.unshift(songId);
-        await playlist.save();
       }
-
       res.status(201).send("ok!");
     } catch (error) {
       console.error("Error updating liked list:", error);
