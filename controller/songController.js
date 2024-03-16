@@ -314,11 +314,13 @@ const songController = {
     try {
       const { userId, songId } = req.params;
       const playlist = await Playlist.findOne({ "like.user": userId });
+
       if (!playlist) {
         const newPlaylist = new Playlist({
           like: [{ user: userId, songs: [{ _id: songId, liked: true }] }],
         });
         await newPlaylist.save();
+        res.status(201).send("ok!");
       } else {
         const songIndex = playlist.like.indexOf(songId);
         if (songIndex === -1) {
@@ -329,6 +331,7 @@ const songController = {
         });
         playlist.like.splice(songIndex, 1);
         await playlist.save();
+        res.status(200).send("Unlike successful");
       }
     } catch (error) {
       console.error("Error updating liked list:", error);
