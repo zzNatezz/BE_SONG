@@ -318,22 +318,15 @@ const songController = {
         });
         await newPlaylist.save();
       } else {
-        const likeIndex = playlist.like.findIndex((item) =>
-          item.user.equals(userId)
+        await Playlist.findOneAndUpdate(
+          { "like.user": userId, "like.songs._id": songId },
+          {
+            $pull: { "like.$.songs": { _id: songId } },
+            $set: { "like.$.songs.$.liked": false },
+          },
+          { new: true }
         );
-        if (likeIndex !== -1) {
-          const songIndex = playlist.like[likeIndex].songs.findIndex((song) =>
-            song._id.equals(songId)
-          );
-          if (songIndex !== -1) {
-            playlist.like[likeIndex].songs[songIndex].liked =
-              !playlist.like[likeIndex].songs[songIndex].liked;
-            await playlist.save();
-            return res.status(200).send("Unlike successful");
-          }
-        }
-        playlist.like[likeIndex].songs.unshift(songId);
-        await playlist.save();
+        res.status(200).send("unliked!");
       }
 
       res.status(201).send("ok!");
