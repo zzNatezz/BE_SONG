@@ -297,7 +297,7 @@ const songController = {
   //     );
 
   //     for (let i = 0; i < findSongs.length; i++) {
-  //       findSongs[i].liked = { like: false };
+  //       findSongs[i].liked = { like: [] };
   //     }
   //     await Promise.all(findSongs.map((song) => song.save()));
   //     res.send(`ok`);
