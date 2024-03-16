@@ -18,7 +18,7 @@ const songSchema = new Schema({
   },
   liked: [
     {
-      user: { type: Schema.Types.ObjectId, ref: "users" },
+      user: { type: mongoose.Types.ObjectId, ref: "users" },
       like: { type: Boolean, default: false },
     },
   ],
