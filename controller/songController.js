@@ -329,7 +329,7 @@ const songController = {
               { "like.user": userId },
               {
                 $pull: { "like.$.songs": songId },
-                $set: { "like.$.liked": false },
+                $set: { "like..liked": false },
               },
               { new: true }
             );
@@ -341,7 +341,7 @@ const songController = {
           { "like.user": userId },
           {
             $addToSet: { "like.$.songs": songId },
-            $set: { "like.$.liked": true },
+            $set: { "like.0.liked": true },
           },
           { new: true }
         );
