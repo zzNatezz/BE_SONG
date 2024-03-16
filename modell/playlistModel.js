@@ -17,7 +17,6 @@ const playlistSchema = new mongoose.Schema(
           {
             type: mongoose.Schema.Types.ObjectId,
             ref: songModel,
-            liked: { type: Boolean },
           },
         ],
       },
