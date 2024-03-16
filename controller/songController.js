@@ -281,12 +281,13 @@ const songController = {
       user.save();
       return res.status(201).send(`ok!`);
     } else {
-      const song = await songModel.findById(songId);
-      const index = user.likes.indexOf(songId);
-      user.likes.splice(index, 1);
-      user.likes.unshift(song);
+      const songIndex = user.likes.indexOf(songId);
+      if (songIndex === -1) {
+        return res.status(404).send("Song not found in user's likes");
+      }
+      user.likes.splice(songIndex, 1);
       await user.save();
-      return res.status(201).send(`ok!`);
+      return res.status(200).send("Unlike successful");
     }
   },
   unlike: async (req, res) => {
