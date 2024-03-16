@@ -17,6 +17,6 @@ userRoute.delete(
   userController.deleteUser
 );
 
-userRoute.put("/", songController.fileterSong);
+// userRoute.put("/", songController.fileterSong);
 
 export default userRoute;
