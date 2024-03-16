@@ -293,8 +293,8 @@ const songController = {
     const { userId } = req.params;
     try {
       const playlist = await Playlist.findOne({
-        "likes.user": userId,
-      }).populate("likes.songs");
+        "like.user": userId,
+      }).populate("like.songs");
       if (!playlist) {
         return res.status(404).send({ message: "Playlist not found" });
       }
@@ -310,7 +310,7 @@ const songController = {
   liked: async (req, res) => {
     try {
       const { userId, songId } = req.params;
-      const playlist = await Playlist.findOne({ "likes.user": userId });
+      const playlist = await Playlist.findOne({ "like.user": userId });
 
       if (!playlist) {
         const newPlaylist = new Playlist({
