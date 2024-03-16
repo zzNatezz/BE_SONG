@@ -13,8 +13,13 @@ const playlistSchema = new mongoose.Schema(
     like: [
       {
         user: { type: mongoose.Schema.Types.ObjectId, ref: User },
-        songs: [{ type: mongoose.Schema.Types.ObjectId, ref: songModel }],
-        liked: { type: Boolean },
+        songs: [
+          {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: songModel,
+            liked: { type: Boolean },
+          },
+        ],
       },
     ],
   },
