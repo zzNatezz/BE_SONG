@@ -162,7 +162,7 @@ const songController = {
         "listenAgain.user": userId,
       }).populate("listenAgain.songs");
       if (!playlist) {
-        return res.status(404).send({ message: "Playlist not found" });
+        return;
       }
       const listenedSongs = playlist.listenAgain.find((item) =>
         item.user.equals(userId)
@@ -296,7 +296,7 @@ const songController = {
         "like.user": userId,
       }).populate("like.songs");
       if (!playlist) {
-        return res.status(404).send({ message: "Playlist not found" });
+        return;
       }
       const likedSongs = playlist.like.find((item) =>
         item.user.equals(userId)
@@ -355,17 +355,16 @@ const songController = {
   //       (item) => item.liked === undefined
   //     );
 
-  //     for (let i = 0; i < findSongs.length; i++) {
-  //       findSongs[i].liked = { like: [] };
-  //     }
+  //     for (let i = 0; i < findSongs.length; i++) {}
+  //     console.log(findSongs);
   //     await Promise.all(findSongs.map((song) => song.save()));
-  //     res.send(`ok`);
+  //     res.send(findSongs);
   //   } catch (error) {
   //     console.error("Error updating songs:", error);
   //     res.status(500).send("Internal Server Error");
   //   }
   // },
-  //router ở userRoute
+  // router ở userRoute
 };
 
 export { songController };
