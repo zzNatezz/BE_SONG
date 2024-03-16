@@ -274,9 +274,6 @@ const songController = {
     const user = await User.findById(userId);
     const isExisting = user.likes.includes(songId);
     if (!isExisting) {
-      await songModel.findByIdAndUpdate(songId, {
-        $set: { "liked.0.like": true },
-      });
       user.likes.unshift(songId);
       user.save();
       return res.status(201).send(`ok!`);
@@ -288,29 +285,6 @@ const songController = {
       user.likes.splice(songIndex, 1);
       await user.save();
       return res.status(200).send("Unlike successful");
-    }
-  },
-  unlike: async (req, res) => {
-    const { userId, songId } = req.params;
-    try {
-      const user = await User.findById(userId);
-      if (!user) {
-        return res.status(404).send("User not found");
-      }
-
-      const songIndex = user.likes.indexOf(songId);
-      if (songIndex === -1) {
-        return res.status(404).send("Song not found in user's likes");
-      }
-      await songModel.findByIdAndUpdate(songId, {
-        $set: { "liked.0.like": false },
-      });
-      user.likes.splice(songIndex, 1);
-      await user.save();
-      return res.status(200).send("Unlike successful");
-    } catch (error) {
-      console.error("Error unliking song:", error);
-      return res.status(500).send("Internal Server Error");
     }
   },
 
