@@ -188,6 +188,9 @@ const songController = {
   recommendList: async (req, res) => {
     const { userId } = req.params;
     const findUser = await Playlist.findOne({ "listenAgain.user": userId });
+    if (!findUser) {
+      return;
+    }
     const listenAgainList = findUser.listenAgain;
     const getIdListenedList = listenAgainList.map((song) => song._id);
 
