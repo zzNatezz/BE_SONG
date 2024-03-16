@@ -328,12 +328,14 @@ const songController = {
           if (songIndex !== -1) {
             playlist.like[likeIndex].songs[songIndex].liked =
               !playlist.like[likeIndex].songs[songIndex].liked;
-          } else {
-            playlist.like[likeIndex].songs.push({ _id: songId, liked: true });
+            await playlist.save();
+            return res.status(200).send("Unlike successful");
           }
-          await playlist.save();
         }
+        playlist.like[likeIndex].songs.unshift(songId);
+        await playlist.save();
       }
+
       res.status(201).send("ok!");
     } catch (error) {
       console.error("Error updating liked list:", error);
