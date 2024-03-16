@@ -1,10 +1,4 @@
 import mongoose from "mongoose";
-import { User } from "./userModel.js";
-
-const like = new mongoose.Schema({
-  user: { type: mongoose.Types.ObjectId, ref: "users" },
-  liked: { type: Boolean, default: false },
-});
 
 const songSchema = new mongoose.Schema({
   title: { type: String, require: true },
@@ -20,7 +14,11 @@ const songSchema = new mongoose.Schema({
     url: String,
     publicId: String,
   },
-  liked: [like],
+  liked: {
+    type: Map,
+    of: Boolean,
+  },
+
   updatedAt: Date,
   linkytb: { type: String },
   user: { type: String, require: true },
