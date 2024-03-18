@@ -1,16 +1,17 @@
 import { Router } from "express";
 import { userController } from "../controller/userController.js";
 import { middlewareController } from "../controller/middlewareController.js";
-import { songController } from "../controller/songController.js";
 
 const userRoute = Router();
 
 userRoute.get(
   "/",
-  middlewareController.verifyToken,
-  userController.getAllUsers
+  middlewareController.verifyTokenAdmin,
+  userController.getUsers
 );
 
+userRoute.get("/:id", userController.getUser);
+userRoute.put("/:id", userController.updateUser);
 userRoute.delete(
   "/:id",
   middlewareController.verifyTokenAdmin,
