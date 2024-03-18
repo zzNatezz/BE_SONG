@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { songModel } from "./songModel.js";
 
 const userSchema = new mongoose.Schema(
   {
@@ -24,6 +25,13 @@ const userSchema = new mongoose.Schema(
     avatar: {
       type: String,
     },
+    again: [
+      {
+        type: mongoose.Types.ObjectId,
+        ref: songModel,
+      },
+    ],
+
     admin: {
       type: Boolean,
       default: false,

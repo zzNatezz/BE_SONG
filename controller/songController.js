@@ -1,9 +1,8 @@
 import { songModel } from "../modell/songModel.js";
-import { User } from "../modell/userModel.js";
-import { Playlist } from "../modell/playlistModel.js";
 import shuffleIndex from "../utils/shuffleIndex.js";
 import { cloudinary } from "../utils/uploader.js";
 import ytdl from "ytdl-core";
+import { User } from "../modell/userModel.js";
 
 const songController = {
   getAllSong: async (req, res) => {
@@ -37,7 +36,6 @@ const songController = {
       image: { url: dataImage[0].secure_url, publicId: dataImage[0].public_id },
       song: { url: dataAudio[0].secure_url, publicId: dataAudio[0].public_id },
       isPublic: req.body.isPublic,
-      like: false,
       user: userId,
       status: `pending`,
     });
@@ -53,7 +51,6 @@ const songController = {
         image: { url: req.body.cover.url, publicId: "" },
         song: { url: req.body.url.url, publicId: "" },
         isPublic: req.body.isPublic,
-        like: false,
         linkytb: req.body.linkytb,
         user: userId,
         status: "pending",
@@ -123,54 +120,41 @@ const songController = {
     res.status(201).send(`Successful`);
   },
   updateAgainList: async (req, res) => {
+    const { userId, songId } = req.params;
     try {
-      const { userId, songId } = req.params;
-      const playlist = await Playlist.findOne({ "listenAgain.user": userId });
-      if (!playlist) {
-        const newPlaylist = new Playlist({
-          listenAgain: [{ user: userId, songs: [songId] }],
-        });
-        await newPlaylist.save();
+      const listenedList = await User.findById(userId);
+      const isExisting = listenedList.again.includes(songId);
+      if (!isExisting) {
+        listenedList.again.unshift(songId);
+        if (listenedList.again.length > 10) {
+          listenedList.again.pop();
+          await listenedList.save();
+          return res.status(201).send(`ok!`);
+        }
+        listenedList.save();
+        return res.status(201).send(`ok!`);
       } else {
-        const listenAgainIndex = playlist.listenAgain.findIndex((item) =>
-          item.user.equals(userId)
-        );
-        if (listenAgainIndex !== -1) {
-          const songIndex =
-            playlist.listenAgain[listenAgainIndex].songs.indexOf(songId);
-          if (songIndex !== -1) {
-            playlist.listenAgain[listenAgainIndex].songs.splice(songIndex, 1);
-          }
-        }
-        playlist.listenAgain[listenAgainIndex].songs.unshift(songId);
-        if (playlist.listenAgain[listenAgainIndex].songs.length > 10) {
-          playlist.listenAgain[listenAgainIndex].songs.pop();
-        }
-        await playlist.save();
+        const getSong = await songModel.findById(songId);
+        const getIndex = listenedList.again.indexOf(songId);
+        listenedList.again.splice(getIndex, 1);
+        listenedList.again.unshift(getSong);
+        await listenedList.save();
+        return res.status(201).send(`ok!`);
       }
-
-      res.status(201).send("ok!");
     } catch (error) {
-      console.error("Error updating listened list:", error);
-      res.status(500).send({ error: "Server error" });
+      console.log(error);
     }
   },
   againList: async (req, res) => {
-    const { userId } = req.params;
     try {
-      const playlist = await Playlist.findOne({
-        "listenAgain.user": userId,
-      }).populate("listenAgain.songs");
-      if (!playlist) {
-        return;
-      }
-      const listenedSongs = playlist.listenAgain.find((item) =>
-        item.user.equals(userId)
-      ).songs;
-      res.status(200).send(listenedSongs);
+      const { userId } = req.params;
+      const getListened = await User.findById(userId).populate("again");
+      res.status(200).send(getListened.again);
     } catch (error) {
-      console.error("Error getting listened list:", error);
-      res.status(500).send({ error: "Server error" });
+      console.error("Lỗi trong quá trình lấy danh sách Again:", error);
+      return res
+        .status(500)
+        .json({ message: "Đã xảy ra lỗi trong quá trình xử lý yêu cầu" });
     }
   },
   trendingList: async (req, res) => {
@@ -187,11 +171,11 @@ const songController = {
   },
   recommendList: async (req, res) => {
     const { userId } = req.params;
-    const findUser = await Playlist.findOne({ "listenAgain.user": userId });
+    const findUser = await User.findById(userId).populate("again");
     if (!findUser) {
       return;
     }
-    const listenAgainList = findUser.listenAgain;
+    const listenAgainList = findUser.again;
     const getIdListenedList = listenAgainList.map((song) => song._id);
 
     const findTrendingList = await songModel.find().sort({ view: -1 });
@@ -311,30 +295,32 @@ const songController = {
     }
   },
   liked: async (req, res) => {
+    const { userId, songId } = req.params;
     try {
-      const { userId, songId } = req.params;
-      const playlist = await Playlist.findOne({ "like.user": userId });
+      let playlist = await Playlist.findOne({ "like.user": userId });
 
       if (!playlist) {
-        const newPlaylist = new Playlist({
-          like: [{ user: userId, songs: [{ _id: songId, liked: true }] }],
+        playlist = new Playlist({
+          like: [{ user: userId, songs: [songId] }],
         });
-        await newPlaylist.save();
-        res.status(201).send("ok!");
       } else {
-        const songIndex = playlist.like.indexOf(songId);
-        if (songIndex === -1) {
-          return res.status(404).send("Song not found in user's likes");
+        const likedIndex = playlist.like.findIndex((item) =>
+          item.user.equals(userId)
+        );
+
+        if (likedIndex !== -1) {
+          if (!playlist.like[likedIndex].songs.includes(songId)) {
+            playlist.like[likedIndex].songs.push(songId);
+          }
+        } else {
+          playlist.like.push({ user: userId, songs: [songId] });
         }
-        await Playlist.findByIdAndUpdate(songId, {
-          $set: { [`like.0.songs.${songIndex}.liked`]: false },
-        });
-        playlist.like.splice(songIndex, 1);
-        await playlist.save();
-        res.status(200).send("Unlike successful");
       }
+
+      await playlist.save();
+      res.status(201).send("Song has been liked successfully");
     } catch (error) {
-      console.error("Error updating liked list:", error);
+      console.error("Error liking song:", error);
       res.status(500).send({ error: "Server error" });
     }
   },
