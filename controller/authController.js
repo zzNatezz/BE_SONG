@@ -1,8 +1,7 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { User } from "../modell/userModel.js";
-
-let refreshTokens = [];
+import _ from "lodash";
 
 const authController = {
   registerUser: async (req, res) => {
@@ -15,7 +14,6 @@ const authController = {
         email: req.body.email,
         password: hashed,
         avatar: req.body.avatar || null,
-        listenAgain: req.body.listenAgain || [],
       });
       const user = await newUser.save();
 
@@ -24,90 +22,56 @@ const authController = {
       res.status(500).json(error);
     }
   },
-  generateAccessToken: (user) => {
-    return jwt.sign(
-      {
-        id: user.id,
-        admin: user.admin,
-      },
-      process.env.JWT_ACCESS_KEY,
-      { expiresIn: "60s" }
-    );
-  },
-  generateRefreshToken: (user) => {
-    return jwt.sign(
-      {
-        id: user.id,
-        admin: user.admin,
-      },
-      process.env.JWT_ACCESS_KEY,
-      { expiresIn: "3d" }
-    );
-  },
 
   loginUser: async (req, res) => {
+    const { username, email } = req.body;
     try {
       const user = await User.findOne({
-        $or: [{ username: req.body.username }, { email: req.body.email }],
+        $or: [{ username: username }, { email: email }],
       });
       if (!user) {
-        res.status(404).json("Wrong username or email!");
+        res.status(404).json("username hoặc email không hợp lệ!");
         return;
       }
       const password = await bcrypt.compare(req.body.password, user.password);
       if (!password) {
-        res.status(404).json("Wrong password!");
+        res.status(404).json("password không hợp lệ!");
       }
 
-      if (user && password) {
-        const accessToken = authController.generateAccessToken(user);
-        const refreshToken = authController.generateRefreshToken(user);
-        refreshTokens.push(refreshToken);
-        res.cookie("refreshToken", refreshToken, {
-          httpOnly: true,
-          secure: false,
-          path: "/",
-          sameSite: "Strict",
-        });
+      const payload = {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        avatar: user.avatar,
+      };
 
-        const { password, ...others } = user._doc;
-        res.status(200).json({ ...others, accessToken });
-      }
+      const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_KEY, {
+        expiresIn: "3d",
+      });
+
+      return res.status(200).send(accessToken);
     } catch (error) {
       res.status(500).json(error);
     }
   },
-
-  requestRefreshToken: async (req, res) => {
-    const refreshToken = req.cookies.refreshToken;
-    if (!refreshToken) return res.status(401).json("You're not authenticated");
-    if (!refreshTokens.includes(refreshToken)) {
-      return res.status(403).json("Refresh token is not valid");
+  refreshToken: async (req, res) => {
+    const { refreshToken } = req.body;
+    if (!refreshToken) {
+      return res.status(401).json("Refresh token không hợp lệ!");
     }
-    jwt.verify(refreshToken, process.env.JWT_ACCESS_KEY, (err, user) => {
-      if (err) {
-        console.log(err);
-      }
-      refreshTokens = refreshTokens.filter((token) => token !== refreshToken);
-      const newAccessToken = authController.generateAccessToken(user);
-      const newRefreshToken = authController.generateRefreshToken(user);
-      refreshTokens.push(newRefreshToken);
-      res.cookie("refreshToken", newRefreshToken, {
-        httpOnly: true,
-        secure: false,
-        path: "/",
-        sameSite: "Strict",
-      });
-      res.status(200).json({ accessToken: newAccessToken });
+
+    const payload = jwt.verify(refreshToken, process.env.JWT_ACCESS_KEY);
+
+    const newPayload = _.omit(payload, ["exp", "iat"]);
+
+    const newRefreshToken = jwt.sign(newPayload, process.env.JWT_ACCESS_KEY, {
+      expiresIn: "7d",
     });
+    return res.status(200).send(newRefreshToken);
   },
 
   logoutUser: async (req, res) => {
-    res.clearCookie("refreshToken");
-    refreshTokens = refreshTokens.filter(
-      (token) => token !== req.cookies.refreshToken
-    );
-    res.status(200).json("Logged out!");
+    res.status(200).json("Đăng xuất!");
   },
 };
 
