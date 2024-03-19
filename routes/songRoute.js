@@ -52,8 +52,6 @@ songRoute.get("/trending", asyncCatch(songController.trendingList));
 songRoute.put("/trending/:songId", asyncCatch(songController.countView));
 songRoute.get("/recommend/:userId", asyncCatch(songController.recommendList));
 
-songRoute.get("/ytb", asyncCatch(songController.urlYtb));
-
 songRoute.put("/approved/:songId", asyncCatch(songController.approvedSong));
 songRoute.put("/rejected/:songId", asyncCatch(songController.rejectedSong));
 
