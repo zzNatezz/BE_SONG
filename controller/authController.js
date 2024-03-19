@@ -43,6 +43,7 @@ const authController = {
         username: user.username,
         email: user.email,
         avatar: user.avatar,
+        admin: user.admin,
       };
 
       const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_KEY, {
