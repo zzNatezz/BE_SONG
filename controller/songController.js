@@ -2,14 +2,21 @@ import { songModel } from "../modell/songModel.js";
 import shuffleIndex from "../utils/shuffleIndex.js";
 import { cloudinary } from "../utils/uploader.js";
 import ytdl from "ytdl-core";
+import jwt from "jsonwebtoken";
+
 import { User } from "../modell/userModel.js";
 
 const songController = {
   getAllSong: async (req, res) => {
-    const allSong = await songModel.find({});
-    res.status(200).send({
-      allSong,
+    const find = await songModel.find({});
+    const songsObject = {};
+    find.forEach((song) => {
+      songsObject[song._id] = song;
     });
+    const allSongs = jwt.sign(songsObject, process.env.JWT_ACCESS_KEY, {
+      expiresIn: "3d",
+    });
+    return res.status(200).send(allSongs);
   },
   uploadSong: async (req, res) => {
     const { userId } = req.params;
@@ -149,7 +156,14 @@ const songController = {
     try {
       const { userId } = req.params;
       const getListened = await User.findById(userId).populate("again");
-      res.status(200).send(getListened.again);
+      const songsObject = {};
+      getListened.again.forEach((song) => {
+        songsObject[song._id] = song;
+      });
+      const againList = jwt.sign(songsObject, process.env.JWT_ACCESS_KEY, {
+        expiresIn: "3d",
+      });
+      return res.status(200).send(againList);
     } catch (error) {
       console.error("Lỗi trong quá trình lấy danh sách Again:", error);
       return res
@@ -160,7 +174,14 @@ const songController = {
   trendingList: async (req, res) => {
     const trending = await songModel.find().sort({ view: -1 });
     const fakeTrending = [...trending].splice(0, 10);
-    res.status(200).send(fakeTrending);
+    const songsObject = {};
+    fakeTrending.forEach((song) => {
+      songsObject[song._id] = song;
+    });
+    const trendingList = jwt.sign(songsObject, process.env.JWT_ACCESS_KEY, {
+      expiresIn: "3d",
+    });
+    return res.status(200).send(trendingList);
   },
   countView: async (req, res) => {
     const { songId } = req.params;
@@ -191,6 +212,15 @@ const songController = {
     }
 
     const shuffle_recom_song = shuffleIndex(recomm_song);
+
+    const songsObject = {};
+    shuffle_recom_song.splice(0, 10).forEach((song) => {
+      songsObject[song._id] = song;
+    });
+    const recommendList = jwt.sign(songsObject, process.env.JWT_ACCESS_KEY, {
+      expiresIn: "3d",
+    });
+    return res.status(200).send(recommendList);
     res.status(200).send(shuffle_recom_song.splice(0, 10));
   },
   urlYtb: async (req, res) => {
