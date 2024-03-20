@@ -68,12 +68,16 @@ const songController = {
       res.status(500).json(error);
     }
   },
-  update_song_tiltle_and_author: async (req, res) => {
+  update_song_tiltle: async (req, res) => {
     const { songId } = req.params;
-    const getSong = await songModel.findById(songId);
-    getSong.author = req.body.author;
+    const getSong = await songModel.findByIdAndUpdate(songId, {title : req.body.title});
     getSong.title = req.body.title;
-    res.status(201).send("Song has been updated");
+    res.status(201).send("Song'name has been updated");
+  },
+  update_song_author: async (req, res) => {
+    const { songId } = req.params;
+    const getSong = await songModel.findByIdAndUpdate(songId, {author : req.body.author});
+    res.status(201).send("Song'author has been updated");
   },
   update_song_img: async (req, res) => {
     const file = req.file;
