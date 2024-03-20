@@ -5,8 +5,9 @@ import { asyncCatch } from "../utils/asyncCatch.js";
 import {
   postListenedListValid,
   songArrayUploadValid,
-  songPutvalid,
+  songAuthorValid,
   songSingleUploadValid,
+  songTitleValid,
 } from "../validate/song.validate.js";
 
 const songRoute = Router();
@@ -15,15 +16,21 @@ songRoute.post(
   "/:userId",
   uploader.array("files"),
   asyncCatch(songArrayUploadValid),
-  asyncCatch(songPutvalid),
+  asyncCatch(songAuthorValid),
+  asyncCatch(songTitleValid),
   asyncCatch(songController.uploadSong)
 );
 songRoute.get("/", asyncCatch(songController.getAllSong));
 songRoute.get("/update-ytb", asyncCatch(songController.updateUrlYtb));
 songRoute.put(
-  "/:songId",
-  asyncCatch(songPutvalid),
-  asyncCatch(songController.update_song_tiltle_and_author)
+  "/title/:songId",
+  asyncCatch(songTitleValid),
+  asyncCatch(songController.update_song_tiltle)
+);
+songRoute.put(
+  "/author/:songId",
+  asyncCatch(songAuthorValid),
+  asyncCatch(songController.update_song_author)
 );
 songRoute.put(
   "/img/:songId",

@@ -17,9 +17,13 @@ export const songArrayUploadValid = async (req, res, next) => {
   next();
 };
 
-export const songPutvalid = async (req, res, next) => {
-  const { title, author } = req.body;
+export const songTitleValid= async (req, res, next) => {
+  const { title } = req.body;
   if (!title) throw new Error("Title is required");
+  next();
+};
+export const songAuthorValid= async (req, res, next) => {
+  const { author } = req.body;
   if (!author) throw new Error("Author is required");
   next();
 };
