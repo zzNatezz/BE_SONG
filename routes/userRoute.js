@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { userController } from "../controller/userController.js";
 import { middlewareController } from "../controller/middlewareController.js";
+import { uploader } from "../utils/uploader.js";
 
 const userRoute = Router();
 
@@ -11,7 +12,7 @@ userRoute.get(
 );
 
 userRoute.get("/:id", userController.getUser);
-userRoute.put("/:id", userController.updateUser);
+userRoute.put("/:id", uploader.single("file"), userController.updateUser);
 userRoute.delete(
   "/:id",
   middlewareController.verifyTokenAdmin,

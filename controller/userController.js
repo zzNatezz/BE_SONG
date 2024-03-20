@@ -1,4 +1,5 @@
 import { User } from "../modell/userModel.js";
+import { cloudinary } from "../utils/uploader.js";
 
 const userController = {
   getUsers: async (req, res) => {
@@ -25,10 +26,30 @@ const userController = {
   updateUser: async (req, res) => {
     const userId = req.params.id;
     const { username, email, password } = req.body;
+    const file = req.file;
+    const avatar = [];
+
+    if (file) {
+      const dataUrl = `data:${file.mimetype};base64,${file.buffer?.toString(
+        "base64"
+      )}`;
+      console.log(dataUrl);
+      const fileName = file.originalname.split(".")[0];
+      const uploaded = await cloudinary.uploader.upload(dataUrl, {
+        public_id: fileName,
+        resource_type: "auto",
+      });
+      uploaded.resource_type === "image" && avatar.push(uploaded);
+    }
+
     try {
       const user = await User.findById(userId);
       if (!user) {
         return res.status(404).json({ error: "Người dùng không tồn tại" });
+      }
+      if (avatar.length > 0) {
+        const avatarUrl = avatar[0].secure_url;
+        user.avatar = avatarUrl;
       }
       if (username) {
         user.username = username;
