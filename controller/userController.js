@@ -1,3 +1,4 @@
+import jwt from "jsonwebtoken";
 import { User } from "../modell/userModel.js";
 import { cloudinary } from "../utils/uploader.js";
 
@@ -63,7 +64,17 @@ const userController = {
         user.password = hashedPassword;
       }
       await user.save();
-      return res.status(200).send(user);
+      const payload = {
+        username: user.username,
+        email: user.email,
+        avatar: user.avatar,
+      };
+
+      const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_KEY, {
+        expiresIn: "3d",
+      });
+
+      return res.status(200).send(accessToken);
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: "Internal Server Error" });
