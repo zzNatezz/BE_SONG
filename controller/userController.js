@@ -65,6 +65,7 @@ const userController = {
       }
       await user.save();
       const payload = {
+        _id: userId,
         username: user.username,
         email: user.email,
         avatar: user.avatar,
