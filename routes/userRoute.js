@@ -1,19 +1,20 @@
 import { Router } from "express";
 import { userController } from "../controller/userController.js";
-import { middlewareController } from "../controller/middlewareController.js";
 import { uploader } from "../utils/uploader.js";
+import { midleware } from "../validate/middleware.js";
 
 const userRoute = Router();
 
-userRoute.get(
-  "/",
-  middlewareController.verifyTokenAdmin,
-  userController.getUsers
-);
+userRoute.get("/", midleware.verifyToken, userController.getUsers);
 
 userRoute.get("/:id", userController.getUser);
-userRoute.put("/:id", uploader.single("file"), userController.updateUser);
-userRoute.delete("/:id", userController.deleteUser);
+userRoute.put(
+  "/:id",
+  midleware.verifyTokenAdmin,
+  uploader.single("file"),
+  userController.updateUser
+);
+userRoute.delete("/:id", midleware.verifyTokenAdmin, userController.deleteUser);
 
 // userRoute.put("/", songController.fileterSong);
 
