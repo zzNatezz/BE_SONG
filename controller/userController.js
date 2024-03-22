@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { User } from "../modell/userModel.js";
+import { User } from "../models/userModel.js";
 import { cloudinary } from "../utils/uploader.js";
 
 const userController = {

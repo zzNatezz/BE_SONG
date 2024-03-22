@@ -1,10 +1,10 @@
-import { songModel } from "../modell/songModel.js";
+import { songModel } from "../models/songModel.js";
 import shuffleIndex from "../utils/shuffleIndex.js";
 import { cloudinary } from "../utils/uploader.js";
 import ytdl from "ytdl-core";
 import jwt from "jsonwebtoken";
 
-import { User } from "../modell/userModel.js";
+import { User } from "../models/userModel.js";
 
 const songController = {
   getAllSong: async (req, res) => {

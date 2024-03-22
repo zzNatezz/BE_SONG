@@ -1,5 +1,5 @@
 import { isObjectIdOrHexString } from "mongoose";
-import { songModel } from "../modell/songModel.js";
+import { songModel } from "../models/songModel.js";
 
 export const songArrayUploadValid = async (req, res, next) => {
   const listFile = req.files;

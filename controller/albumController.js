@@ -1,4 +1,4 @@
-import Album from "../modell/ablum";
+import Album from "../models/ablum";
 
 const createAlbum = async (req, res) => {
   try {
