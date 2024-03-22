@@ -10,7 +10,6 @@ import {
 } from "../validate/song.validate.js";
 
 const songRoute = Router();
-songRoute.post("/ytb/:userId", asyncCatch(songController.uploadSongYtb));
 songRoute.post(
   "/:userId",
   uploader.array("files"),
@@ -19,8 +18,11 @@ songRoute.post(
   asyncCatch(songController.uploadSong)
 );
 songRoute.get("/", asyncCatch(songController.getAllSong));
+
 songRoute.get("/update-ytb", asyncCatch(songController.updateUrlYtb));
 songRoute.get("/ytb", asyncCatch(songController.urlYtb));
+songRoute.post("/ytb/:userId", asyncCatch(songController.uploadSongYtb));
+
 songRoute.put(
   "/:songId",
   asyncCatch(songPutvalid),
