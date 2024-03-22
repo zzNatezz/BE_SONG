@@ -13,11 +13,7 @@ userRoute.get(
 
 userRoute.get("/:id", userController.getUser);
 userRoute.put("/:id", uploader.single("file"), userController.updateUser);
-userRoute.delete(
-  "/:id",
-  middlewareController.verifyTokenAdmin,
-  userController.deleteUser
-);
+userRoute.delete("/:id", userController.deleteUser);
 
 // userRoute.put("/", songController.fileterSong);
 
