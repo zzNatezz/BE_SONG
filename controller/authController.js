@@ -5,15 +5,16 @@ import _ from "lodash";
 
 const authController = {
   registerUser: async (req, res) => {
+    const { username, email } = req.body;
     try {
       const salt = await bcrypt.genSalt(10);
       const hashed = await bcrypt.hash(req.body.password, salt);
 
       const newUser = await new User({
-        username: req.body.username,
-        email: req.body.email,
+        username,
+        email,
         password: hashed,
-        avatar: req.body.avatar || null,
+        avatar: null,
       });
       const user = await newUser.save();
 
