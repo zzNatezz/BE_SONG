@@ -50,17 +50,18 @@ const songController = {
   },
   uploadSongYtb: async (req, res) => {
     const { userId } = req.params;
+    const { title, author, cover, url, isPublic, linkytb, status } = req.body;
     try {
       const newSong = await new songModel({
-        title: req.body.title,
-        author: req.body.author,
+        title,
+        author,
         view: 0,
-        image: { url: req.body.cover.url, publicId: "" },
-        song: { url: req.body.url.url, publicId: "" },
-        isPublic: req.body.isPublic,
-        linkytb: req.body.linkytb,
+        image: { url: cover.url, publicId: "" },
+        song: { url: url.url, publicId: "" },
+        isPublic,
+        linkytb,
         user: userId,
-        status: "pending",
+        status,
       });
       const song = await newSong.save();
       res.status(200).json(song);
