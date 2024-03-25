@@ -50,11 +50,7 @@ const authController = {
       const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_KEY, {
         expiresIn: "3d",
       });
-      res.cookie("token", accessToken, {
-        httpOnly: true,
-        secure: false,
-        sameSite: "strict",
-      });
+      res.cookie("token", accessToken);
       res.status(200).send(accessToken);
     } catch (error) {
       res.status(500).json(error);
