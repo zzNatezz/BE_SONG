@@ -31,7 +31,6 @@ const userSchema = new mongoose.Schema(
         ref: songModel,
       },
     ],
-
     admin: {
       type: Boolean,
       default: false,
