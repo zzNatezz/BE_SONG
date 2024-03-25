@@ -2,6 +2,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { User } from "../models/userModel.js";
 import _ from "lodash";
+import listLikeModel from "../models/listLike.js";
 
 const authController = {
   registerUser: async (req, res) => {
@@ -17,10 +18,16 @@ const authController = {
         avatar: null,
       });
       const user = await newUser.save();
+      await listLikeModel.create(
+        {
+          owner : newUser._id.toString(),
+          listLike : []
+        }
+      )
 
       res.status(200).json(user);
     } catch (error) {
-      res.status(500).json(error);
+      res.status(500).json('that bai');
     }
   },
 

@@ -226,8 +226,8 @@ const songController = {
       expiresIn: "3d",
     });
     return res.status(200).send(recommendList);
+    res.status(200).send(shuffle_recom_song.splice(0, 10));
   },
-
   urlYtb: async (req, res) => {
     try {
       const videoUrl = req.query.url;
