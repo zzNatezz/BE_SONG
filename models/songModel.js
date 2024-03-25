@@ -15,7 +15,6 @@ const songSchema = new mongoose.Schema({
     url: String,
     publicId: String,
   },
-
   updatedAt: Date,
   linkytb: { type: String },
   user: { type: String, require: true },
