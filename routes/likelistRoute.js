@@ -8,4 +8,6 @@ likelistRoute.put('/:userId/:songId',asyncCatch(listLikeController.updateListLik
 
 likelistRoute.get('/:userId',asyncCatch(listLikeController.getListLike));
 
+likelistRoute.get('/check/:userId/:songId',asyncCatch(listLikeController.isInLikeList));
+
 export default likelistRoute

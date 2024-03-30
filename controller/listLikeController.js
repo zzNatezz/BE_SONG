@@ -16,6 +16,12 @@ const listLikeController = {
         const {userId} = req.params;
         const listlike = await listLikeModel.find({owner: userId}).populate('listLike');
         res.status(200).send(listlike)
+    },
+    isInLikeList : async(req, res) =>{
+        const {userId, songId} = req.params;
+        const allSong = await listLikeModel.findOne({owner: userId})
+        const isIt = allSong.listLike.includes(songId)
+        res.status(200).send(isIt)
     }
 }
 
