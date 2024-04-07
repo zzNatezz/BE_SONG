@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { mongo } from "mongoose";
 import express from "express";
 import morgan from "morgan";
 import dotenv from "dotenv";
@@ -43,4 +43,12 @@ mongoose
         `server port http://localhost:${process.env.PORT} is running !!!`
       )
     )
-  );
+  )
+  .then(() => {
+    const db = mongoose.connection.db;
+    const collection = db.collection("songs");
+    const changeStream = collection.watch(  );
+    changeStream.on("change", next => {
+      console.log(`somgthing may change on database`);
+    });
+  });
