@@ -12,6 +12,7 @@ const songSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
   isPublic: Boolean,
   song: {
+    video: String,
     url: String,
     publicId: String,
   },

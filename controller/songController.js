@@ -71,13 +71,17 @@ const songController = {
   },
   update_song_tiltle: async (req, res) => {
     const { songId } = req.params;
-    const getSong = await songModel.findByIdAndUpdate(songId, {title : req.body.title});
+    const getSong = await songModel.findByIdAndUpdate(songId, {
+      title: req.body.title,
+    });
     getSong.title = req.body.title;
     res.status(201).send("Song'name has been updated");
   },
   update_song_author: async (req, res) => {
     const { songId } = req.params;
-    const getSong = await songModel.findByIdAndUpdate(songId, {author : req.body.author});
+    const getSong = await songModel.findByIdAndUpdate(songId, {
+      author: req.body.author,
+    });
     res.status(201).send("Song'author has been updated");
   },
   update_song_img: async (req, res) => {
@@ -259,10 +263,11 @@ const songController = {
       if (song.linkytb) {
         const videoUrl = song.linkytb;
         let info = await ytdl.getInfo(videoUrl);
-        let format = ytdl.filterFormats(info.formats, "audioonly");
-        format = ytdl.chooseFormat(info.formats, { quality: "18" });
+        let video = ytdl.chooseFormat(info.formats, { quality: "248" });
+        let format = ytdl.chooseFormat(info.formats, { quality: "18" });
         await songModel.findByIdAndUpdate(songId, {
           $set: {
+            "song.video": video.url,
             "song.url": format.url,
             "image.url":
               info.videoDetails.thumbnails[
