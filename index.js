@@ -19,7 +19,7 @@ const sv = express();
 const sv_io = http.createServer(sv);
 const io = new Server(sv_io, {
   cors: {
-    origin: "https://be-song-admin-page.vercel.app/",
+    origin: "https://be-song-admin-page.vercel.app",
     methods: ["GET", "POST"],
   },
 });
@@ -28,7 +28,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 sv.use(
   cors({
-    origin: "https://be-song-admin-page.vercel.app/",
+    origin: "*",
   })
 );
 
